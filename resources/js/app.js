@@ -6,6 +6,8 @@ import VueRouter from 'vue-router'
 import router from "./router";
 import auth from "./auth";
 import "./bootstrap";
+import Vuex from "vuex";
+import store from "./components/store/store";
 
 // Set Vue router
 Vue.router = router;
@@ -19,7 +21,23 @@ Vue.use(VueAuth, auth);
 import Index from "./Index";
 Vue.component("index", Index);
 
+//Set Vuex
+Vue.use(Vuex);
+
+router.beforeEach((to, from, next) => {
+    if (to.meta.title) {
+        document.title = `${to.meta.title}`;
+    }
+
+    if (to.meta.layout) {
+        store.state.layout = to.meta.layout;
+    }
+
+    next();
+});
+
 new Vue({
     render: h => h(Index),
-    router
+    router,
+    store
 }).$mount('#app')

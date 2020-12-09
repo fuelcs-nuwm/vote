@@ -1,19 +1,21 @@
 <template>
-    <div>callback</div>
+    <div></div>
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 export default {
     created() {
-        this.init();
         this.login();
     },
     methods: {
-        init () {
-            console.log(this.$route)
-        },
-
+        ...mapMutations({
+            set_is_show_spinner: 'set_is_show_spinner'
+        }),
         login (){
+
+            this.set_is_show_spinner(true);
+
             this.$auth.login({
                 params: {
                     authuser: this.$route.query.authuser,
@@ -21,13 +23,13 @@ export default {
                     hd: this.$route.query.hd,
                     prompt: this.$route.query.prompt,
                     scope: this.$route.query.scope,
-                },
-                success: function(res) {
-                },
-                error: function(error) {
-                    console.log(error)
-                },
-            });
+                }
+            })
+                .then()
+                .catch()
+                .finally(()=>{
+                    this.set_is_show_spinner(false);
+                });
         }
     }
 }

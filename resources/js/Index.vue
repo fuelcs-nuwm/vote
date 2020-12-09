@@ -1,12 +1,43 @@
 <template>
-    <div class="container h-100 d-flex flex-column align-items-center justify-content-center">
-        <router-view></router-view>
+    <div class="h-100">
+        <template v-if="$auth.ready()">
+            <component v-bind:is="layout"></component>
+        </template>
+        <template v-if="!$auth.ready()">
+            <div class="h-100 d-flex justify-content-center align-items-center">
+                <Spinner></Spinner>
+            </div>
+        </template>
+        <div v-if="$auth.ready() && isShowSpinner" class="spinner-wrapper d-flex justify-content-center align-items-center">
+            <Spinner v-if="isShowSpinner"></Spinner>
+        </div>
     </div>
 </template>
 
 <script>
+
+import Spinner from "./components/common/Spinner";
+import Root from "./components/layouts/Root";
+import Admin from "./components/layouts/Admin";
+import Empty from "./components/layouts/Empty";
+import {mapGetters} from "vuex";
+
 export default {
-    name: "Index"
+    computed: {
+        ...mapGetters({
+            isShowSpinner: 'get_is_show_spinner',
+            getLayout: 'get_layout'
+        }),
+        layout() {
+            return this.getLayout;
+        },
+    },
+    components: {
+        Spinner,
+        Root,
+        Admin,
+        Empty
+    }
 }
 </script>
 
@@ -19,4 +50,15 @@ body,
     margin: 0;
 }
 
+</style>
+
+<style scoped lang="scss">
+    .spinner-wrapper {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 2000;
+    }
 </style>

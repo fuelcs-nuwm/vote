@@ -12,7 +12,7 @@ const routes = [
         component: Home,
         meta: {
             auth: undefined,
-            layout: "MainLayout",
+            layout: "Root",
             title: "Корпуси"
         }
     },
@@ -22,7 +22,7 @@ const routes = [
         component: Callback,
         meta: {
             auth: undefined,
-            layout: "MainLayout",
+            layout: "Empty",
             title: "Корпуси"
         }
     },
@@ -32,7 +32,7 @@ const routes = [
         component: Login,
         meta: {
             auth: undefined,
-            layout: "MainLayout",
+            layout: "Empty",
             title: "Login"
         }
     },
@@ -42,7 +42,7 @@ const routes = [
         component: Admin,
         meta: {
             auth: true,
-            layout: "admin",
+            layout: "Admin",
             title: "Admin"
         }
     },
