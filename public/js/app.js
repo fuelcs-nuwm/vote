@@ -55039,7 +55039,7 @@ var config = {
     url: 'auth/refresh',
     method: 'GET',
     enabled: true,
-    interval: 1
+    interval: 30
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = (config);

@@ -16,6 +16,6 @@ const config = {
     loginData: {url: 'auth/callback', method: 'GET', redirect: "/admin", fetchUser: true},
     logoutData: {url: 'auth/logout', method: 'POST', redirect: '/', makeRequest: true},
     fetchData: {url: 'auth/me', method: 'POST', enabled: true},
-    refreshData: {url: 'auth/refresh', method: 'GET', enabled: true, interval: 1}
+    refreshData: {url: 'auth/refresh', method: 'GET', enabled: true, interval: 30}
 }
 export default config
