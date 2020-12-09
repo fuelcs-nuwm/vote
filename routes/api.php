@@ -17,3 +17,16 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::prefix('auth')->group(function () {
+
+    Route::get('callback', 'Auth\AuthController@handleCallback');
+
+    Route::group(['middleware' => 'jwt'], function(){
+
+        Route::post('logout', 'Auth\AuthController@logout');
+        Route::post('me', 'Auth\AuthController@me');
+        Route::get('refresh', 'Auth\AuthController@refresh');
+    });
+
+});

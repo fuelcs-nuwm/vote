@@ -1,6 +1,6 @@
 <template>
     <div class="container h-100 d-flex flex-column align-items-center justify-content-center">
-        <a href="/redirect">авторизація</a>
+        <router-view></router-view>
     </div>
 </template>
 
