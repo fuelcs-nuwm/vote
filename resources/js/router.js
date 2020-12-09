@@ -1,5 +1,5 @@
 import VueRouter from "vue-router";
-import Home from "./components/Home"
+import Home from "./components/pages/Home"
 import Callback from "./components/auth/Callback"
 import Login from "./components/auth/Login"
 import Admin from "./components/admin/Admin"

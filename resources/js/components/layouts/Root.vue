@@ -1,5 +1,5 @@
 <template>
-    <div class="container h-100 d-flex flex-column align-items-center justify-content-center">
+    <div class="wrapper h-100 d-flex flex-column">
         <router-view></router-view>
     </div>
 </template>
@@ -10,6 +10,13 @@ name: "Root"
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+
+.wrapper {
+    background-image: url(/img/background.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
 
 </style>
