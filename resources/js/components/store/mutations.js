@@ -3,7 +3,7 @@ let mutations = {
         state.layout = payload
     },
 
-    set_is_show_spinner (state, payload) {
+    setIsShowSpinner (state, payload) {
         state.is_show_spinner = payload
     },
 };

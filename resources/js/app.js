@@ -21,6 +21,10 @@ Vue.use(VueAuth, auth);
 import Index from "./Index";
 Vue.component("index", Index);
 
+//Vuelidate
+import Vuelidate from 'vuelidate'
+Vue.use(Vuelidate)
+
 //Set Vuex
 Vue.use(Vuex);
 

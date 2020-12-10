@@ -30,3 +30,17 @@ Route::prefix('auth')->group(function () {
     });
 
 });
+
+Route::group(['namespace' => 'Api'], function() {
+    Route::group(['middleware' => 'jwt'], function(){
+        Route::group(['prefix' => '/events',], function () {
+
+            Route::get('', 'EventsController@index');
+            Route::get('event', 'EventsController@show');
+            Route::post('', 'EventsController@store');
+            Route::put('{id}', 'EventsController@update');
+            Route::delete('{id}', 'EventsController@delete');
+
+        });
+    });
+});

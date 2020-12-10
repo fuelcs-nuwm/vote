@@ -10,11 +10,11 @@ export default {
     },
     methods: {
         ...mapMutations({
-            set_is_show_spinner: 'set_is_show_spinner'
+            setIsShowSpinner: 'setIsShowSpinner'
         }),
         login (){
 
-            this.set_is_show_spinner(true);
+            this.setIsShowSpinner(true);
 
             this.$auth.login({
                 params: {
@@ -28,7 +28,7 @@ export default {
                 .then()
                 .catch()
                 .finally(()=>{
-                    this.set_is_show_spinner(false);
+                    this.setIsShowSpinner(false);
                 });
         }
     }
