@@ -3,8 +3,8 @@
         <div class="wrapper d-flex flex-column">
             <div class="overlay position-absolute"></div>
             <div class="main d-flex flex-column flex-grow-1">
-                <header class="container d-flex justify-content-between">
-                    <nav class="navbar navbar-expand-lg navbar-light w-100 px-0">
+                <header class="container-fluid d-flex justify-content-between">
+                    <nav class="navbar container navbar-expand-lg navbar-light w-100 px-0">
                         <a class="navbar-brand text-white" href="#">Адмін панель</a>
                         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
@@ -43,11 +43,13 @@
                     </nav>
 
                 </header>
-                <div class="content container flex-grow-1">
+                <div class="d-flex flex-grow-1 flex-column">
                     <router-view></router-view>
                 </div>
-                <footer class="container py-4">
-                    <span class="text-white">© 2020 Офіційний сайт Національний університет водного господарства та природокористування</span>
+                <footer class="container-fluid py-4">
+                    <div class="container-fluid">
+                        <span class="text-white">© 2020 Офіційний сайт Національний університет водного господарства та природокористування</span>
+                    </div>
                 </footer>
             </div>
         </div>
@@ -131,10 +133,6 @@ export default {
             .logout {
                 cursor: pointer;
             }
-        }
-
-        .content {
-            background-color: rgb(241, 241, 241);
         }
 
         footer {

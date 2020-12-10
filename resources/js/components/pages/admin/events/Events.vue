@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <h2>Події</h2>
+    <div class="content container py-3 flex-grow-1">
+        <h2>Налаштування подій</h2>
 
         <form @submit.prevent="storeEvent">
             <div class="input-group mb-3">
@@ -184,5 +184,9 @@ export default {
 </script>
 
 <style scoped>
+
+.content {
+    background-color: rgb(241, 241, 241);
+}
 
 </style>

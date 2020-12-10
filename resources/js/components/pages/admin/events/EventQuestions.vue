@@ -1,58 +1,56 @@
 <template>
-    <div>
-        <div>
-            <h2>Запитання</h2>
-            <p class="breadcrumb">
-                <router-link tag="span" :to="{ name: 'admin.events'}">
-                    <b class="breadcrumb-item link">Події</b>
-                </router-link>
-                <span>&nbsp;- Запитання</span></p>
-            <h5>Подія: {{ event && event.title }}</h5>
+    <div class="content container py-3 flex-grow-1">
+        <h2>Запитання</h2>
+        <p class="breadcrumb">
+            <router-link tag="span" :to="{ name: 'admin.events'}">
+                <b class="breadcrumb-item link">Налаштування подій</b>
+            </router-link>
+            <span>&nbsp;- Запитання</span></p>
+        <h5>Подія: {{ event && event.title }}</h5>
 
-            <form @submit.prevent="storeQuestion">
-                <div class="input-group mb-3">
+        <form @submit.prevent="storeQuestion">
+            <div class="input-group mb-3">
 
-                    <input type="text" class="form-control" placeholder="Нове запитання" v-model="newQuestion.title">
-                    <div class="input-group-append">
-                        <span type="submit" class="input-group-text" @click="storeQuestion">Додати запитання</span>
-                    </div>
+                <input type="text" class="form-control" placeholder="Нове запитання" v-model="newQuestion.title">
+                <div class="input-group-append">
+                    <span type="submit" class="input-group-text" @click="storeQuestion">Додати запитання</span>
                 </div>
-            </form>
+            </div>
+        </form>
+        <div
+            v-if="!$v.newQuestion.title.required && $v.newQuestion.title.$dirty "
+            class="text-danger"
+        >Введіть назву
+        </div>
+
+        <hr>
+
+        <div v-for="question in questions">
+            <div v-if="editId == -1" class="input-group mb-3">
+                <input
+                    type="text" class="form-control"
+                    placeholder="Нова подія"
+                    v-model="question.title"
+                    @click="editQuestion(question)"
+                    readonly
+                >
+                <div class="input-group-append">
+                    <span class="input-group-text" @click="deleteQuestion(question.id)">Видалити запитання</span>
+                </div>
+            </div>
+            <div v-if="editId == question.id" class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Нове запитання" v-model="editedQuestion.title">
+                <div class="input-group-append">
+                    <span class="input-group-text" @click="updateQuestion">Редагувати</span>
+                </div>
+                <div class="input-group-append">
+                    <span class="input-group-text" @click="cancelEdit">Скасувати</span>
+                </div>
+            </div>
             <div
-                v-if="!$v.newQuestion.title.required && $v.newQuestion.title.$dirty "
+                v-if="editId == question.id && !$v.editedQuestion.title.required && $v.editedQuestion.title.$dirty"
                 class="text-danger"
             >Введіть назву
-            </div>
-
-            <hr>
-
-            <div v-for="question in questions">
-                <div v-if="editId == -1" class="input-group mb-3">
-                    <input
-                        type="text" class="form-control"
-                        placeholder="Нова подія"
-                        v-model="question.title"
-                        @click="editQuestion(question)"
-                        readonly
-                    >
-                    <div class="input-group-append">
-                        <span class="input-group-text" @click="deleteQuestion(question.id)">Видалити запитання</span>
-                    </div>
-                </div>
-                <div v-if="editId == question.id" class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Нове запитання" v-model="editedQuestion.title">
-                    <div class="input-group-append">
-                        <span class="input-group-text" @click="updateQuestion">Редагувати</span>
-                    </div>
-                    <div class="input-group-append">
-                        <span class="input-group-text" @click="cancelEdit">Скасувати</span>
-                    </div>
-                </div>
-                <div
-                    v-if="editId == question.id && !$v.editedQuestion.title.required && $v.editedQuestion.title.$dirty"
-                    class="text-danger"
-                >Введіть назву
-                </div>
             </div>
         </div>
     </div>
@@ -213,6 +211,10 @@ export default {
 
 .breadcrumb-item.link {
     cursor: pointer;
+}
+
+.content {
+    background-color: rgb(241, 241, 241);
 }
 
 </style>

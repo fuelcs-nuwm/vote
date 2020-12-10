@@ -1,68 +1,66 @@
 <template>
-    <div>
-        <div>
-            <h2>Користувач</h2>
-            <p class="breadcrumb">
-                <router-link tag="span" :to="{ name: 'admin.events'}">
-                    <b class="breadcrumb-item link">Події</b>
-                </router-link>
-                <span>&nbsp;- Користувач</span></p>
-            <h5>Подія: {{ event && event.title }}</h5>
+    <div class="content container py-3 flex-grow-1">
+        <h2>Користувач</h2>
+        <p class="breadcrumb">
+            <router-link tag="span" :to="{ name: 'admin.events'}">
+                <b class="breadcrumb-item link">Налаштування подій</b>
+            </router-link>
+            <span>&nbsp;- Користувач</span></p>
+        <h5>Подія: {{ event && event.title }}</h5>
 
-            <form @submit.prevent="storeCustomer">
-                <div class="input-group mb-3">
+        <form @submit.prevent="storeCustomer">
+            <div class="input-group mb-3">
 
-                    <input type="text" class="form-control" placeholder="Новий користувач" v-model="newCustomer.email">
-                    <div class="input-group-append">
-                        <span type="submit" class="input-group-text" @click="storeCustomer">Додати користувача</span>
-                    </div>
+                <input type="text" class="form-control" placeholder="Новий користувач" v-model="newCustomer.email">
+                <div class="input-group-append">
+                    <span type="submit" class="input-group-text" @click="storeCustomer">Додати користувача</span>
                 </div>
-            </form>
+            </div>
+        </form>
+        <div
+            v-if="!$v.newCustomer.email.required && $v.newCustomer.email.$dirty "
+            class="text-danger"
+        >Введіть назву
+        </div>
+        <div
+            v-if="!$v.newCustomer.email.email && $v.newCustomer.email.$dirty "
+            class="text-danger"
+        >Невірний email
+        </div>
+
+        <hr>
+
+        <div v-for="customer in customers">
+            <div v-if="editId == -1" class="input-group mb-3">
+                <input
+                    type="text" class="form-control"
+                    placeholder="Нова подія"
+                    v-model="customer.email"
+                    @click="editCustomer(customer)"
+                    readonly
+                >
+                <div class="input-group-append">
+                    <span class="input-group-text" @click="deleteCustomer(customer.id)">Видалити користувача</span>
+                </div>
+            </div>
+            <div v-if="editId == customer.id" class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Новий користувач" v-model="editedCustomer.email">
+                <div class="input-group-append">
+                    <span class="input-group-text" @click="updateCustomer">Редагувати</span>
+                </div>
+                <div class="input-group-append">
+                    <span class="input-group-text" @click="cancelEdit">Скасувати</span>
+                </div>
+            </div>
             <div
-                v-if="!$v.newCustomer.email.required && $v.newCustomer.email.$dirty "
+                v-if="editId == customer.id && !$v.editedCustomer.email.required && $v.editedCustomer.email.$dirty"
                 class="text-danger"
             >Введіть назву
             </div>
             <div
-                v-if="!$v.newCustomer.email.email && $v.newCustomer.email.$dirty "
+                v-if="!$v.editedCustomer.email.email && $v.editedCustomer.email.$dirty "
                 class="text-danger"
             >Невірний email
-            </div>
-
-            <hr>
-
-            <div v-for="customer in customers">
-                <div v-if="editId == -1" class="input-group mb-3">
-                    <input
-                        type="text" class="form-control"
-                        placeholder="Нова подія"
-                        v-model="customer.email"
-                        @click="editCustomer(customer)"
-                        readonly
-                    >
-                    <div class="input-group-append">
-                        <span class="input-group-text" @click="deleteCustomer(customer.id)">Видалити користувача</span>
-                    </div>
-                </div>
-                <div v-if="editId == customer.id" class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Новий користувач" v-model="editedCustomer.email">
-                    <div class="input-group-append">
-                        <span class="input-group-text" @click="updateCustomer">Редагувати</span>
-                    </div>
-                    <div class="input-group-append">
-                        <span class="input-group-text" @click="cancelEdit">Скасувати</span>
-                    </div>
-                </div>
-                <div
-                    v-if="editId == customer.id && !$v.editedCustomer.email.required && $v.editedCustomer.email.$dirty"
-                    class="text-danger"
-                >Введіть назву
-                </div>
-                <div
-                    v-if="!$v.editedCustomer.email.email && $v.editedCustomer.email.$dirty "
-                    class="text-danger"
-                >Невірний email
-                </div>
             </div>
         </div>
     </div>
@@ -231,6 +229,10 @@ export default {
 
 .breadcrumb-item.link {
     cursor: pointer;
+}
+
+.content {
+    background-color: rgb(241, 241, 241);
 }
 
 </style>
