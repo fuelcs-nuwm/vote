@@ -17,6 +17,8 @@
         >Введіть назву
         </div>
 
+        <hr>
+
         <div v-for="event in events">
             <div v-if="editId == -1" class="input-group mb-3">
                 <input

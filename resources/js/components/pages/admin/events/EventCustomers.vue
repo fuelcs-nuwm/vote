@@ -29,6 +29,8 @@
             >Невірний email
             </div>
 
+            <hr>
+
             <div v-for="customer in customers">
                 <div v-if="editId == -1" class="input-group mb-3">
                     <input
