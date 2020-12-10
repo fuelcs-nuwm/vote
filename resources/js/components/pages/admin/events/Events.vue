@@ -2,12 +2,15 @@
     <div>
         <h2>Події</h2>
 
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Нова подія" v-model="newEvent.title">
-            <div class="input-group-append">
-                <span class="input-group-text" @click="storeEvent">Додати подію</span>
+        <form @submit.prevent="storeEvent">
+            <div class="input-group mb-3">
+
+                <input type="text" class="form-control" placeholder="Нова подія" v-model="newEvent.title">
+                <div class="input-group-append">
+                    <span type="submit" class="input-group-text" @click="storeEvent">Додати подію</span>
+                </div>
             </div>
-        </div>
+        </form>
         <div
             v-if="!$v.newEvent.title.required && $v.newEvent.title.$dirty "
             class="text-danger"
@@ -15,8 +18,14 @@
         </div>
 
         <div v-for="event in events">
-            <div v-if="editId == -1" class="input-group mb-3" @click="editEvent(event)">
-                <input type="text" class="form-control" placeholder="Нова подія" v-model="event.title" readonly>
+            <div v-if="editId == -1" class="input-group mb-3">
+                <input
+                    type="text" class="form-control"
+                    placeholder="Нова подія"
+                    v-model="event.title"
+                    @click="editEvent(event)"
+                    readonly
+                >
                 <div class="input-group-append">
                     <span class="input-group-text" @click="deleteEvent(event.id)">Видалити подію</span>
                 </div>
@@ -113,6 +122,7 @@ export default {
 
                 })
                 .then(() => {
+                    this.newEvent.title = "";
                     this.setIsShowSpinner(false);
                 });
         },
