@@ -95,14 +95,14 @@ export default {
             email: {
                 email,
                 required,
-                maxLength: maxLength(255),
+                maxLength: maxLength(100),
             },
         },
         editedCustomer: {
             email: {
                 email,
                 required,
-                maxLength: maxLength(255),
+                maxLength: maxLength(100),
             },
         }
     },
