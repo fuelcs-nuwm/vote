@@ -30,8 +30,11 @@
                     <span class="input-group-text" @click="deleteEvent(event.id)">Видалити подію</span>
                 </div>
             </div>
-            <router-link v-if="editId == -1" tag="div" :to="`/admin/events/${event.id}`">
+            <router-link v-if="editId == -1" tag="span" :to="`/admin/events/${event.id}/questions`">
                 <button class="btn btn-info mb-3 mr-3">Додати запитання</button>
+            </router-link>
+            <router-link v-if="editId == -1" tag="span" :to="`/admin/events/${event.id}/customers`">
+                <button class="btn btn-info mb-3 mr-3">Додати користувача</button>
             </router-link>
             <div v-if="editId == event.id" class="input-group mb-3">
                 <input type="text" class="form-control" placeholder="Нова подія" v-model="editedEvent.title">
@@ -135,7 +138,7 @@ export default {
         },
         cancelEdit () {
             this.editId = -1;
-            this.editedEvent = nul;
+            this.editedEvent = null;
         },
         updateEvent() {
             if (this.$v.editedEvent.title.$invalid) {

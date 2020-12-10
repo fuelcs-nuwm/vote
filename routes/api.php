@@ -48,10 +48,21 @@ Route::group(['namespace' => 'Api'], function() {
 
             Route::get('', 'QuestionsController@index');
             Route::get('events/{id}', 'QuestionsController@get_event_questions');
-            Route::get('event', 'QuestionsController@show');
+            Route::get('{id}', 'QuestionsController@show');
             Route::post('', 'QuestionsController@store');
             Route::put('{id}', 'QuestionsController@update');
             Route::delete('{id}', 'QuestionsController@delete');
+
+        });
+
+        Route::group(['prefix' => '/customers',], function () {
+
+            Route::get('', 'CustomersController@index');
+            Route::get('events/{id}', 'CustomersController@get_event_customers');
+            Route::get('{id}', 'CustomersController@show');
+            Route::post('', 'CustomersController@store');
+            Route::put('{id}', 'CustomersController@update');
+            Route::delete('{id}', 'CustomersController@delete');
 
         });
 

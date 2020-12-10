@@ -69,9 +69,7 @@ class QuestionsController extends Controller
 
         $validator = Validator::make($request->all(), [
             'title' => 'required|string',
-            'started' => 'boolean',
-            'finished' => 'boolean',
-            'integer' => 'integer|min:30',
+            'event_id' => 'exists:App\Event,id'
         ]);
 
         if ($validator->fails()) {
