@@ -30,6 +30,9 @@
                     <span class="input-group-text" @click="deleteEvent(event.id)">Видалити подію</span>
                 </div>
             </div>
+            <router-link v-if="editId == -1" tag="div" :to="`/admin/events/${event.id}`">
+                <button class="btn btn-info mb-3 mr-3">Додати запитання</button>
+            </router-link>
             <div v-if="editId == event.id" class="input-group mb-3">
                 <input type="text" class="form-control" placeholder="Нова подія" v-model="editedEvent.title">
                 <div class="input-group-append">

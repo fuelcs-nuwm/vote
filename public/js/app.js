@@ -3380,6 +3380,212 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/pages/admin/events/EventQuestions.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/pages/admin/events/EventQuestions.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuelidate/lib/validators */ "./node_modules/vuelidate/lib/validators/index.js");
+/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      eventId: null,
+      event: null,
+      editId: -1,
+      questions: [],
+      newQuestion: {
+        title: ""
+      },
+      editedQuestion: {
+        title: ""
+      }
+    };
+  },
+  validations: {
+    newQuestion: {
+      title: {
+        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["required"],
+        maxLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["maxLength"])(255)
+      }
+    },
+    editedQuestion: {
+      title: {
+        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["required"],
+        maxLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["maxLength"])(255)
+      }
+    }
+  },
+  mounted: function mounted() {
+    this.init();
+  },
+  methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapMutations"])({
+    setIsShowSpinner: 'setIsShowSpinner'
+  })), {}, {
+    init: function init() {
+      this.eventId = this.$route.params.id;
+      this.setIsShowSpinner(true);
+      this.getEvent(this.eventId);
+      this.getQuestions(this.eventId);
+      this.isLoaded = true;
+      this.setIsShowSpinner(false);
+    },
+    getEvent: function getEvent(eventId) {
+      var _this = this;
+
+      this.setIsShowSpinner(true);
+      axios.get("/events/".concat(eventId)).then(function (response) {
+        console.log(response.data);
+        _this.event = response.data.data;
+      })["catch"](function (error) {}).then(function () {
+        _this.setIsShowSpinner(false);
+      });
+    },
+    getQuestions: function getQuestions(eventId) {
+      var _this2 = this;
+
+      this.setIsShowSpinner(true);
+      axios.get("questions/events/".concat(eventId)).then(function (response) {
+        console.log(response.data);
+        _this2.questions = response.data.data;
+      })["catch"](function (error) {}).then(function () {
+        _this2.setIsShowSpinner(false);
+      });
+    },
+    storeQuestion: function storeQuestion() {
+      var _this3 = this;
+
+      if (this.$v.newQuestion.title.$invalid) {
+        this.$v.newQuestion.title.$touch();
+        return;
+      }
+
+      this.setIsShowSpinner(true);
+      axios.post("questions", {
+        title: this.newQuestion.title,
+        event_id: this.eventId
+      }).then(function (response) {
+        _this3.getQuestions(_this3.eventId);
+      })["catch"](function (error) {}).then(function () {
+        _this3.newQuestion.title = "";
+
+        _this3.setIsShowSpinner(false);
+      });
+    },
+    editQuestion: function editQuestion(question) {
+      this.editId = question.id;
+      this.editedQuestion = Object(lodash__WEBPACK_IMPORTED_MODULE_1__["clone"])(question, true);
+    },
+    cancelEdit: function cancelEdit() {
+      this.editId = -1;
+      this.editedQuestion = nul;
+    },
+    updateQuestion: function updateQuestion() {
+      var _this4 = this;
+
+      if (this.$v.editedQuestion.title.$invalid) {
+        this.$v.editedQuestion.title.$touch();
+        return;
+      }
+
+      this.setIsShowSpinner(true);
+      axios.put("questions/".concat(this.editId), {
+        title: this.editedQuestion.title
+      }).then(function (response) {
+        _this4.getQuestions(_this4.eventId);
+      })["catch"](function (error) {}).then(function () {
+        _this4.setIsShowSpinner(false);
+
+        _this4.cancelEdit();
+      });
+    },
+    deleteQuestion: function deleteQuestion(questionId) {
+      var _this5 = this;
+
+      if (window.confirm("Видалити запитання?")) {
+        this.setIsShowSpinner(true);
+        axios["delete"]("/questions/".concat(questionId)).then(function (response) {
+          _this5.getQuestions(_this5.eventId);
+        })["catch"](function (error) {}).then(function () {
+          _this5.setIsShowSpinner(false);
+        });
+      }
+    }
+  })
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/pages/admin/events/Events.vue?vue&type=script&lang=js&":
 /*!************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/pages/admin/events/Events.vue?vue&type=script&lang=js& ***!
@@ -3400,6 +3606,9 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+//
+//
+//
 //
 //
 //
@@ -40539,6 +40748,209 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/pages/admin/events/EventQuestions.vue?vue&type=template&id=43ec0563&scoped=true&":
+/*!************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/pages/admin/events/EventQuestions.vue?vue&type=template&id=43ec0563&scoped=true& ***!
+  \************************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c(
+      "div",
+      [
+        _c("h2", [_vm._v("Запитання")]),
+        _vm._v(" "),
+        _c("p", [_vm._v("Події - Запитання")]),
+        _vm._v(" "),
+        _c("p", [_vm._v("Подія: " + _vm._s(_vm.event && _vm.event.title))]),
+        _vm._v(" "),
+        _c(
+          "form",
+          {
+            on: {
+              submit: function($event) {
+                $event.preventDefault()
+                return _vm.storeQuestion($event)
+              }
+            }
+          },
+          [
+            _c("div", { staticClass: "input-group mb-3" }, [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.newQuestion.title,
+                    expression: "newQuestion.title"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { type: "text", placeholder: "Нове запитання" },
+                domProps: { value: _vm.newQuestion.title },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.newQuestion, "title", $event.target.value)
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("div", { staticClass: "input-group-append" }, [
+                _c(
+                  "span",
+                  {
+                    staticClass: "input-group-text",
+                    attrs: { type: "submit" },
+                    on: { click: _vm.storeQuestion }
+                  },
+                  [_vm._v("Додати запитання")]
+                )
+              ])
+            ])
+          ]
+        ),
+        _vm._v(" "),
+        !_vm.$v.newQuestion.title.required && _vm.$v.newQuestion.title.$dirty
+          ? _c("div", { staticClass: "text-danger" }, [
+              _vm._v("Введіть назву\n        ")
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm._l(_vm.questions, function(question) {
+          return _c("div", [
+            _vm.editId == -1
+              ? _c("div", { staticClass: "input-group mb-3" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: question.title,
+                        expression: "question.title"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    attrs: {
+                      type: "text",
+                      placeholder: "Нова подія",
+                      readonly: ""
+                    },
+                    domProps: { value: question.title },
+                    on: {
+                      click: function($event) {
+                        return _vm.editQuestion(question)
+                      },
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(question, "title", $event.target.value)
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "input-group-append" }, [
+                    _c(
+                      "span",
+                      {
+                        staticClass: "input-group-text",
+                        on: {
+                          click: function($event) {
+                            return _vm.deleteQuestion(question.id)
+                          }
+                        }
+                      },
+                      [_vm._v("Видалити запитання")]
+                    )
+                  ])
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.editId == question.id
+              ? _c("div", { staticClass: "input-group mb-3" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.editedQuestion.title,
+                        expression: "editedQuestion.title"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    attrs: { type: "text", placeholder: "Нове запитання" },
+                    domProps: { value: _vm.editedQuestion.title },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(
+                          _vm.editedQuestion,
+                          "title",
+                          $event.target.value
+                        )
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "input-group-append" }, [
+                    _c(
+                      "span",
+                      {
+                        staticClass: "input-group-text",
+                        on: { click: _vm.updateQuestion }
+                      },
+                      [_vm._v("Редагувати")]
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "input-group-append" }, [
+                    _c(
+                      "span",
+                      {
+                        staticClass: "input-group-text",
+                        on: { click: _vm.cancelEdit }
+                      },
+                      [_vm._v("Скасувати")]
+                    )
+                  ])
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.editId == question.id &&
+            !_vm.$v.editedQuestion.title.required &&
+            _vm.$v.editedQuestion.title.$dirty
+              ? _c("div", { staticClass: "text-danger" }, [
+                  _vm._v("Введіть назву\n            ")
+                ])
+              : _vm._e()
+          ])
+        })
+      ],
+      2
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/pages/admin/events/Events.vue?vue&type=template&id=5b5ee0ae&scoped=true&":
 /*!****************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/pages/admin/events/Events.vue?vue&type=template&id=5b5ee0ae&scoped=true& ***!
@@ -40615,111 +41027,127 @@ var render = function() {
         : _vm._e(),
       _vm._v(" "),
       _vm._l(_vm.events, function(event) {
-        return _c("div", [
-          _vm.editId == -1
-            ? _c("div", { staticClass: "input-group mb-3" }, [
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: event.title,
-                      expression: "event.title"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  attrs: {
-                    type: "text",
-                    placeholder: "Нова подія",
-                    readonly: ""
-                  },
-                  domProps: { value: event.title },
-                  on: {
-                    click: function($event) {
-                      return _vm.editEvent(event)
-                    },
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
+        return _c(
+          "div",
+          [
+            _vm.editId == -1
+              ? _c("div", { staticClass: "input-group mb-3" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: event.title,
+                        expression: "event.title"
                       }
-                      _vm.$set(event, "title", $event.target.value)
-                    }
-                  }
-                }),
-                _vm._v(" "),
-                _c("div", { staticClass: "input-group-append" }, [
-                  _c(
-                    "span",
-                    {
-                      staticClass: "input-group-text",
-                      on: {
-                        click: function($event) {
-                          return _vm.deleteEvent(event.id)
+                    ],
+                    staticClass: "form-control",
+                    attrs: {
+                      type: "text",
+                      placeholder: "Нова подія",
+                      readonly: ""
+                    },
+                    domProps: { value: event.title },
+                    on: {
+                      click: function($event) {
+                        return _vm.editEvent(event)
+                      },
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
                         }
+                        _vm.$set(event, "title", $event.target.value)
                       }
-                    },
-                    [_vm._v("Видалити подію")]
-                  )
-                ])
-              ])
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.editId == event.id
-            ? _c("div", { staticClass: "input-group mb-3" }, [
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.editedEvent.title,
-                      expression: "editedEvent.title"
                     }
-                  ],
-                  staticClass: "form-control",
-                  attrs: { type: "text", placeholder: "Нова подія" },
-                  domProps: { value: _vm.editedEvent.title },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
+                  }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "input-group-append" }, [
+                    _c(
+                      "span",
+                      {
+                        staticClass: "input-group-text",
+                        on: {
+                          click: function($event) {
+                            return _vm.deleteEvent(event.id)
+                          }
+                        }
+                      },
+                      [_vm._v("Видалити подію")]
+                    )
+                  ])
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.editId == -1
+              ? _c(
+                  "router-link",
+                  { attrs: { tag: "div", to: "/admin/events/" + event.id } },
+                  [
+                    _c("button", { staticClass: "btn btn-info mb-3 mr-3" }, [
+                      _vm._v("Додати запитання")
+                    ])
+                  ]
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.editId == event.id
+              ? _c("div", { staticClass: "input-group mb-3" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.editedEvent.title,
+                        expression: "editedEvent.title"
                       }
-                      _vm.$set(_vm.editedEvent, "title", $event.target.value)
+                    ],
+                    staticClass: "form-control",
+                    attrs: { type: "text", placeholder: "Нова подія" },
+                    domProps: { value: _vm.editedEvent.title },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.editedEvent, "title", $event.target.value)
+                      }
                     }
-                  }
-                }),
-                _vm._v(" "),
-                _c("div", { staticClass: "input-group-append" }, [
-                  _c(
-                    "span",
-                    {
-                      staticClass: "input-group-text",
-                      on: { click: _vm.updateEvent }
-                    },
-                    [_vm._v("Редагувати")]
-                  )
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "input-group-append" }, [
-                  _c(
-                    "span",
-                    {
-                      staticClass: "input-group-text",
-                      on: { click: _vm.cancelEdit }
-                    },
-                    [_vm._v("Скасувати")]
-                  )
+                  }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "input-group-append" }, [
+                    _c(
+                      "span",
+                      {
+                        staticClass: "input-group-text",
+                        on: { click: _vm.updateEvent }
+                      },
+                      [_vm._v("Редагувати")]
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "input-group-append" }, [
+                    _c(
+                      "span",
+                      {
+                        staticClass: "input-group-text",
+                        on: { click: _vm.cancelEdit }
+                      },
+                      [_vm._v("Скасувати")]
+                    )
+                  ])
                 ])
-              ])
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.editId == event.id &&
-          !_vm.$v.editedEvent.title.required &&
-          _vm.$v.editedEvent.title.$dirty
-            ? _c("div", { staticClass: "text-danger" }, [
-                _vm._v("Введіть назву\n        ")
-              ])
-            : _vm._e()
-        ])
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.editId == event.id &&
+            !_vm.$v.editedEvent.title.required &&
+            _vm.$v.editedEvent.title.$dirty
+              ? _c("div", { staticClass: "text-danger" }, [
+                  _vm._v("Введіть назву\n        ")
+                ])
+              : _vm._e()
+          ],
+          1
+        )
       })
     ],
     2
@@ -65150,6 +65578,75 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/pages/admin/events/EventQuestions.vue":
+/*!***********************************************************************!*\
+  !*** ./resources/js/components/pages/admin/events/EventQuestions.vue ***!
+  \***********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _EventQuestions_vue_vue_type_template_id_43ec0563_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./EventQuestions.vue?vue&type=template&id=43ec0563&scoped=true& */ "./resources/js/components/pages/admin/events/EventQuestions.vue?vue&type=template&id=43ec0563&scoped=true&");
+/* harmony import */ var _EventQuestions_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EventQuestions.vue?vue&type=script&lang=js& */ "./resources/js/components/pages/admin/events/EventQuestions.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _EventQuestions_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _EventQuestions_vue_vue_type_template_id_43ec0563_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _EventQuestions_vue_vue_type_template_id_43ec0563_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "43ec0563",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/pages/admin/events/EventQuestions.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/pages/admin/events/EventQuestions.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************!*\
+  !*** ./resources/js/components/pages/admin/events/EventQuestions.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EventQuestions_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../../node_modules/vue-loader/lib??vue-loader-options!./EventQuestions.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/pages/admin/events/EventQuestions.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EventQuestions_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/pages/admin/events/EventQuestions.vue?vue&type=template&id=43ec0563&scoped=true&":
+/*!******************************************************************************************************************!*\
+  !*** ./resources/js/components/pages/admin/events/EventQuestions.vue?vue&type=template&id=43ec0563&scoped=true& ***!
+  \******************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EventQuestions_vue_vue_type_template_id_43ec0563_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../../node_modules/vue-loader/lib??vue-loader-options!./EventQuestions.vue?vue&type=template&id=43ec0563&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/pages/admin/events/EventQuestions.vue?vue&type=template&id=43ec0563&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EventQuestions_vue_vue_type_template_id_43ec0563_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EventQuestions_vue_vue_type_template_id_43ec0563_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/pages/admin/events/Events.vue":
 /*!***************************************************************!*\
   !*** ./resources/js/components/pages/admin/events/Events.vue ***!
@@ -65445,7 +65942,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_auth_Login__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/auth/Login */ "./resources/js/components/auth/Login.vue");
 /* harmony import */ var _components_pages_admin_users_Users__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/pages/admin/users/Users */ "./resources/js/components/pages/admin/users/Users.vue");
 /* harmony import */ var _components_pages_admin_events_Events__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/pages/admin/events/Events */ "./resources/js/components/pages/admin/events/Events.vue");
-/* harmony import */ var _components_pages_admin_vote_Vote__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/pages/admin/vote/Vote */ "./resources/js/components/pages/admin/vote/Vote.vue");
+/* harmony import */ var _components_pages_admin_events_EventQuestions__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/pages/admin/events/EventQuestions */ "./resources/js/components/pages/admin/events/EventQuestions.vue");
+/* harmony import */ var _components_pages_admin_vote_Vote__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/pages/admin/vote/Vote */ "./resources/js/components/pages/admin/vote/Vote.vue");
+
 
 
 
@@ -65512,9 +66011,18 @@ var routes = [{
     title: "Events"
   }
 }, {
+  path: "/admin/events/:id",
+  name: "admin.events.questions",
+  component: _components_pages_admin_events_EventQuestions__WEBPACK_IMPORTED_MODULE_6__["default"],
+  meta: {
+    auth: true,
+    layout: "Admin",
+    title: 'EventQuestions'
+  }
+}, {
   path: "/admin/vote",
   name: "admin.vote",
-  component: _components_pages_admin_vote_Vote__WEBPACK_IMPORTED_MODULE_6__["default"],
+  component: _components_pages_admin_vote_Vote__WEBPACK_IMPORTED_MODULE_7__["default"],
   meta: {
     auth: true,
     layout: "Admin",

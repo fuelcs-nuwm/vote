@@ -2,24 +2,71 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Event;
 use App\Http\Controllers\Controller;
+use App\Question;
 use Illuminate\Http\Request;
 use Validator;
 
-class EventsController extends Controller
+class QuestionsController extends Controller
 {
     public function index () {
-        $events = Event::all();
+        $questions = Question::all();
 
         return response()->json([
-            "data" => $events,
-            "message" => "success",
+            "data" => $questions,
+            "message" => "ok",
             "status" => 200
         ],200);
     }
 
-    public function store (Request $request) {
+    public function get_event_questions ($id) {
+        $model = Question::all()->where('event_id', $id);
+        $questions = [];
+
+        foreach ($model as $question) {
+            array_push($questions , [
+                'id' => $question->id,
+                'title' => $question->title,
+            ]);
+        }
+
+        return response()->json([
+            "data" => $questions,
+            "message" => "ok",
+            "status" => 200
+        ],200);
+    }
+
+    public function store (Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string',
+            'event_id' => 'exists:App\Event,id'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "data" => [],
+                "message" => $validator->errors(),
+                "status" => 422
+            ], 200);
+        }
+
+        $question = new Question();
+        $question->fill($request->toArray());
+        $question->save();
+
+        return response()->json([
+            "data" => $question,
+            "message" => "ok",
+            "status" => 200
+        ], 200);
+    }
+
+    public function update ($id, Request $request)
+    {
+        $question = Question::findOrFail($id);
+
         $validator = Validator::make($request->all(), [
             'title' => 'required|string',
             'started' => 'boolean',
@@ -35,60 +82,19 @@ class EventsController extends Controller
             ], 200);
         }
 
-        $event = new Event();
-        $event->fill($request->toArray());
-        $event->save();
+        $question->fill($request->toArray());
+        $question->save();
 
         return response()->json([
-            "data" => $event,
-            "message" => "ok",
-            "status" => 200
-        ], 200);
-    }
-
-    public function show($id, Request $request)
-    {
-        $event = Event::findOrFail($id);
-
-        return response()->json([
-            "data" => $event,
-            "message" => "ok",
-            "status" => 200
-        ], 200);
-    }
-
-    public function update($id, Request $request)
-    {
-        $event = Event::findOrFail($id);
-
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string',
-            'started' => 'boolean',
-            'finished' => 'boolean',
-            'integer' => 'integer|min:30',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                "data" => [],
-                "message" => $validator->errors(),
-                "status" => 422
-            ], 200);
-        }
-
-        $event->fill($request->toArray());
-        $event->save();
-
-        return response()->json([
-            "data" => $event,
+            "data" => $question,
             "message" => "ok",
             "status" => 200
         ],200);
     }
 
     public function delete ($id) {
-        $currency = Event::findOrFail($id);
-        $currency->delete();
+        $question = Question::findOrFail($id);
+        $question->delete();
 
         return response()->json([
             "data" => [],

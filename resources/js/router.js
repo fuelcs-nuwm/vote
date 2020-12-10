@@ -4,6 +4,7 @@ import Callback from "./components/auth/Callback"
 import Login from "./components/auth/Login"
 import Users from "./components/pages/admin/users/Users"
 import Events from "./components/pages/admin/events/Events"
+import EventQuestions from "./components/pages/admin/events/EventQuestions"
 import Vote from "./components/pages/admin/vote/Vote"
 
 // Routes
@@ -67,6 +68,16 @@ const routes = [
             auth: true,
             layout: "Admin",
             title: "Events"
+        }
+    },
+    {
+        path: "/admin/events/:id",
+        name: "admin.events.questions",
+        component: EventQuestions,
+        meta: {
+            auth: true,
+            layout: "Admin",
+            title: 'EventQuestions'
         }
     },
     {
