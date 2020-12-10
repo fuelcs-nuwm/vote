@@ -40,7 +40,7 @@
                         <input
                             v-if="activeEvent"
                             type="text" class="form-control"
-                            v-model="selectedEvent.title"
+                            v-model="activeEvent.title"
                             readonly
                         >
                         <div class="input-group-append" @click="doDeactivateEvent">
