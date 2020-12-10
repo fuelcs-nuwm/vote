@@ -157,17 +157,19 @@ export default {
                 });
         },
         deleteEvent(eventId) {
-            this.setIsShowSpinner(true);
-            axios
-                .delete(`/events/${eventId}`)
-                .then(response => {
-                    this.getEvents();
-                })
-                .catch(error => {
-                })
-                .then(() => {
-                    this.setIsShowSpinner(false);
-                });
+            if (window.confirm("Видалити подію?")) {
+                this.setIsShowSpinner(true);
+                axios
+                    .delete(`/events/${eventId}`)
+                    .then(response => {
+                        this.getEvents();
+                    })
+                    .catch(error => {
+                    })
+                    .then(() => {
+                        this.setIsShowSpinner(false);
+                    });
+            }
         },
     }
 }
