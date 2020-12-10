@@ -29,7 +29,8 @@ export default {
             getLayout: 'get_layout'
         }),
         layout() {
-            return this.getLayout;
+            return this.$store.getters.get_layout;
+            // return this.getLayout;
         },
     },
     components: {
@@ -60,5 +61,17 @@ body,
         right: 0;
         bottom: 0;
         z-index: 2000;
+    }
+
+    *:root {
+        --orange-color: #ED6E00;
+        --orange-bg-color: #ED6E00;
+        --blue-color: #256589;
+        --blue-bg-color: #256589;
+        --gley-color: rgb(241, 241, 241);
+        --gley-bg-color: rgb(241, 241, 241);
+        --light-blue-color: #358cbd;
+        --light-blue-bg-color: #358cbd;
+
     }
 </style>

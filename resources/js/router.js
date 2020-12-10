@@ -2,7 +2,9 @@ import VueRouter from "vue-router";
 import Home from "./components/pages/Home"
 import Callback from "./components/auth/Callback"
 import Login from "./components/auth/Login"
-import Admin from "./components/admin/Admin"
+import Users from "./components/pages/admin/users/Users"
+import Events from "./components/pages/admin/events/Events"
+import Vote from "./components/pages/admin/vote/Vote"
 
 // Routes
 const routes = [
@@ -39,11 +41,42 @@ const routes = [
     {
         path: "/admin",
         name: "admin",
-        component: Admin,
+        meta: {
+            auth: {
+                redirect: { name: "admin.users" }
+            },
+            layout: "Admin",
+            title: "Admin"
+        }
+    },
+    {
+        path: "/admin/users",
+        name: "admin.users",
+        component: Users,
         meta: {
             auth: true,
             layout: "Admin",
-            title: "Admin"
+            title: "Users"
+        }
+    },
+    {
+        path: "/admin/events",
+        name: "admin.events",
+        component: Events,
+        meta: {
+            auth: true,
+            layout: "Admin",
+            title: "Events"
+        }
+    },
+    {
+        path: "/admin/vote",
+        name: "admin.vote",
+        component: Vote,
+        meta: {
+            auth: true,
+            layout: "Admin",
+            title: "Vote"
         }
     },
 ];
