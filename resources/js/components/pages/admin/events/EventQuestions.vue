@@ -11,7 +11,13 @@
         <form @submit.prevent="storeQuestion">
             <div class="input-group mb-3">
 
-                <input type="text" class="form-control" placeholder="Нове запитання" v-model="newQuestion.title">
+                <textarea
+                    type="text"
+                    class="form-control"
+                    placeholder="Нове запитання"
+                    v-model="newQuestion.title"
+                    rows="3"
+                ></textarea>
                 <div class="input-group-append">
                     <span type="submit" class="input-group-text" @click="storeQuestion">Додати запитання</span>
                 </div>
@@ -27,19 +33,26 @@
 
         <div v-for="question in questions">
             <div v-if="editId == -1" class="input-group mb-3">
-                <input
+                <textarea
                     type="text" class="form-control"
                     placeholder="Нова подія"
                     v-model="question.title"
+                    rows="3"
                     @click="editQuestion(question)"
                     readonly
-                >
+                ></textarea>
                 <div class="input-group-append">
                     <span class="input-group-text" @click="deleteQuestion(question.id)">Видалити запитання</span>
                 </div>
             </div>
             <div v-if="editId == question.id" class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Нове запитання" v-model="editedQuestion.title">
+                <textarea
+                    type="text"
+                    class="form-control"
+                    placeholder="Нове запитання"
+                    v-model="editedQuestion.title"
+                    rows="3"
+                ></textarea>
                 <div class="input-group-append">
                     <span class="input-group-text" @click="updateQuestion">Редагувати</span>
                 </div>
@@ -83,13 +96,13 @@ export default {
         newQuestion: {
             title: {
                 required,
-                maxLength: maxLength(255),
+                maxLength: maxLength(5000),
             },
         },
         editedQuestion: {
             title: {
                 required,
-                maxLength: maxLength(255),
+                maxLength: maxLength(5000),
             },
         }
     },

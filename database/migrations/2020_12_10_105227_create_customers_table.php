@@ -15,7 +15,7 @@ class CreateCustomersTable extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
-            $table->string('email')->unique();
+            $table->string('email',255)->unique();
             $table->foreignId('event_id');
             $table->foreign('event_id')
                 ->references('id')->on('events')

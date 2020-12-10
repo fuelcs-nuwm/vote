@@ -61,6 +61,9 @@
 import vuescroll from "vuescroll";
 
 export default {
+    components: {
+        vuescroll
+    },
     data() {
         return {
             ops: {
@@ -75,9 +78,6 @@ export default {
             }
         };
     },
-    components: {
-        vuescroll
-    }
 }
 </script>
 

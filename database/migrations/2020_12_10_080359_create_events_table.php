@@ -15,7 +15,8 @@ class CreateEventsTable extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('title',5000);
+            $table->string('embedHtml',5000)->nullable();
             $table->boolean('started')->default(false);
             $table->boolean('finished')->default(false);
             $table->integer('vote_time')->default(30);

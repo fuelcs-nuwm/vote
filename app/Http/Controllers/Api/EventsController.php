@@ -22,6 +22,7 @@ class EventsController extends Controller
     public function store (Request $request) {
         $validator = Validator::make($request->all(), [
             'title' => 'required|string',
+            'embedHtml' => 'string',
             'started' => 'boolean',
             'finished' => 'boolean',
             'integer' => 'integer|min:30',
@@ -63,6 +64,7 @@ class EventsController extends Controller
 
         $validator = Validator::make($request->all(), [
             'title' => 'required|string',
+            'embedHtml' => 'string',
             'started' => 'boolean',
             'finished' => 'boolean',
             'integer' => 'integer|min:30',

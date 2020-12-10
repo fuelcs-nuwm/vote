@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Event extends Model
 {
     protected $fillable = [
-        'title','started','finished','vote_time'
+        'title','embedHtml', 'started','finished','vote_time'
     ];
 }

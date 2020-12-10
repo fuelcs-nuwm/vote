@@ -5,7 +5,11 @@
         <form @submit.prevent="storeEvent">
             <div class="input-group mb-3">
 
-                <input type="text" class="form-control" placeholder="Нова подія" v-model="newEvent.title">
+                <input
+                    type="text" class="form-control"
+                    placeholder="Нова подія"
+                    v-model="newEvent.title"
+                >
                 <div class="input-group-append">
                     <span type="submit" class="input-group-text" @click="storeEvent">Додати подію</span>
                 </div>
@@ -39,7 +43,11 @@
                 <button class="btn btn-info mb-3 mr-3">Додати користувача</button>
             </router-link>
             <div v-if="editId == event.id" class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Нова подія" v-model="editedEvent.title">
+                <input
+                    type="text" class="form-control"
+                    placeholder="Нова подія"
+                    v-model="editedEvent.title"
+                >
                 <div class="input-group-append">
                     <span class="input-group-text" @click="updateEvent">Редагувати</span>
                 </div>
@@ -82,13 +90,13 @@ export default {
         newEvent: {
             title: {
                 required,
-                maxLength: maxLength(255),
+                maxLength: maxLength(5000),
             },
         },
         editedEvent: {
             title: {
                 required,
-                maxLength: maxLength(255),
+                maxLength: maxLength(5000),
             },
         }
     },

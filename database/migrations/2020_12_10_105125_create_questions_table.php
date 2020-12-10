@@ -15,7 +15,7 @@ class CreateQuestionsTable extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('title', 5000);
             $table->foreignId('event_id');
             $table->foreign('event_id')
                 ->references('id')->on('events')
