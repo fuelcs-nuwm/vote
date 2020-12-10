@@ -50,9 +50,42 @@
                             >Деактивувати</span>
                         </div>
                     </div>
-                    <p>Запитання:</p>
-                    <div class="alert alert-secondary" v-for="question in questions">
-                        {{ question.title }}
+
+                    <div v-if="activeEvent">
+                        <p>Запитання:</p>
+
+                        <button class="btn btn-secondary mb-3 mr-3" @click="isAddNewQuestion = !isAddNewQuestion">Додати запитання</button>
+
+                        <div v-if="isAddNewQuestion">
+
+                            <form @submit.prevent="storeQuestion">
+                                <div class="input-group mb-3">
+                                    <textarea
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Нове запитання"
+                                        v-model="newQuestion.title"
+                                        rows="3"
+                                    ></textarea>
+                                    <div class="input-group-append">
+                                        <span type="submit" class="input-group-text" @click="storeQuestion">Додати запитання</span>
+                                    </div>
+                                </div>
+                            </form>
+                            <div
+                                v-if="!$v.newQuestion.title.required && $v.newQuestion.title.$dirty "
+                                class="text-danger"
+                            >Введіть назву
+                            </div>
+                            <div class="alert alert-secondary" v-for="question in questions">
+                                {{ question.title }}
+                            </div>
+                        </div>
+
+
+                        <div class="alert alert-secondary" v-for="question in questions">
+                            {{ question.title }}
+                        </div>
                     </div>
                 </vuescroll>
             </div>
@@ -70,6 +103,7 @@
 import {mapMutations} from "vuex";
 import {clone as _clone, find as _find} from 'lodash';
 import vuescroll from "vuescroll";
+import {maxLength, required} from "vuelidate/lib/validators";
 
 export default {
     components: {
@@ -77,12 +111,16 @@ export default {
     },
     data() {
         return {
+            isAddNewQuestion: false,
             events: [],
             questions: [],
             selectedEvent: null,
             activeEvent: null,
             embedHtml: '',
             embedHtmlModel: '',
+            newQuestion: {
+                title: ""
+            },
 
             ops: {
                 vuescroll: {},
@@ -95,6 +133,14 @@ export default {
                 }
             }
         };
+    },
+    validations: {
+        newQuestion: {
+            title: {
+                required,
+                maxLength: maxLength(5000),
+            },
+        },
     },
     mounted() {
         this.init ();
@@ -226,6 +272,30 @@ export default {
 
                 })
                 .then(() => {
+                    this.setIsShowSpinner(false);
+                });
+        },
+
+        storeQuestion() {
+            if (this.$v.newQuestion.title.$invalid) {
+                this.$v.newQuestion.title.$touch();
+                return;
+            }
+            this.setIsShowSpinner(true);
+            axios
+                .post(`questions`, {
+                    title: this.newQuestion.title,
+                    event_id: this.activeEvent.id,
+                })
+                .then(response => {
+                    this.getQuestions(this.activeEvent.id);
+                    this.isAddNewQuestion= false;
+                })
+                .catch(error => {
+
+                })
+                .then(() => {
+                    this.newQuestion.title = "";
                     this.setIsShowSpinner(false);
                 });
         }
