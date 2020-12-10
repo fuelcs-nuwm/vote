@@ -40771,7 +40771,7 @@ var render = function() {
         _vm._v(" "),
         _c("p", [_vm._v("Події - Запитання")]),
         _vm._v(" "),
-        _c("p", [_vm._v("Подія: " + _vm._s(_vm.event && _vm.event.title))]),
+        _c("h5", [_vm._v("Подія: " + _vm._s(_vm.event && _vm.event.title))]),
         _vm._v(" "),
         _c(
           "form",

@@ -3,7 +3,7 @@
         <div>
             <h2>Запитання</h2>
             <p>Події - Запитання</p>
-            <p>Подія: {{ event && event.title }}</p>
+            <h5>Подія: {{ event && event.title }}</h5>
 
             <form @submit.prevent="storeQuestion">
                 <div class="input-group mb-3">
