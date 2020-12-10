@@ -2,7 +2,11 @@
     <div>
         <div>
             <h2>Запитання</h2>
-            <p>Події - Запитання</p>
+            <p class="breadcrumb">
+                <router-link tag="span" :to="{ name: 'admin.events'}">
+                    <b class="breadcrumb-item link">Події</b>
+                </router-link>
+                <span>&nbsp;- Запитання</span></p>
             <h5>Подія: {{ event && event.title }}</h5>
 
             <form @submit.prevent="storeQuestion">
@@ -203,6 +207,10 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+
+.breadcrumb-item.link {
+    cursor: pointer;
+}
 
 </style>
