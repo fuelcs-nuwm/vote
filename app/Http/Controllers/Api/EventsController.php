@@ -58,6 +58,30 @@ class EventsController extends Controller
         ], 200);
     }
 
+    public function get_active_event_questions () {
+        $event = Event::with('questions')
+            ->where("started", Event::EVENT_STARTED)->first();
+
+        return response()->json([
+            "data" => $event,
+            "message" => "ok",
+            "status" => 200
+        ],200);
+
+        foreach ($model as $question) {
+            array_push($questions , [
+                'id' => $question->id,
+                'title' => $question->title,
+            ]);
+        }
+
+        return response()->json([
+            "data" => $questions,
+            "message" => "ok",
+            "status" => 200
+        ],200);
+    }
+
     public function update($id, Request $request)
     {
         $event = Event::findOrFail($id);

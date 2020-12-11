@@ -2,6 +2,8 @@ import VueRouter from "vue-router";
 import Home from "./components/pages/Home"
 import Callback from "./components/auth/Callback"
 import Login from "./components/auth/Login"
+import Router from "./components/Router"
+import VotePage from "./components/pages/vote/VotePage"
 import Users from "./components/pages/admin/users/Users"
 import Events from "./components/pages/admin/events/Events"
 import EventQuestions from "./components/pages/admin/events/EventQuestions"
@@ -41,10 +43,31 @@ const routes = [
         }
     },
     {
+        path: "/router",
+        name: "router",
+        component: Router,
+        meta: {
+            auth: undefined,
+            layout: "Empty",
+            title: "Router"
+        }
+    },
+    {
+        path: "/vote",
+        name: "vote",
+        component: VotePage,
+        meta: {
+            auth: [1,2],
+            layout: "Vote",
+            title: "Router"
+        }
+    },
+    {
         path: "/admin",
         name: "admin",
         meta: {
             auth: {
+                role: 1,
                 redirect: { name: "admin.users" }
             },
             layout: "Admin",
@@ -56,7 +79,7 @@ const routes = [
         name: "admin.users",
         component: Users,
         meta: {
-            auth: true,
+            auth: 1,
             layout: "Admin",
             title: "Users"
         }
@@ -66,7 +89,7 @@ const routes = [
         name: "admin.events",
         component: Events,
         meta: {
-            auth: true,
+            auth: 1,
             layout: "Admin",
             title: "Events"
         }
@@ -76,7 +99,7 @@ const routes = [
         name: "admin.events.questions",
         component: EventQuestions,
         meta: {
-            auth: true,
+            auth: 1,
             layout: "Admin",
             title: 'EventQuestions'
         }
@@ -86,7 +109,7 @@ const routes = [
         name: "admin.events.customers",
         component: EventCustomers,
         meta: {
-            auth: true,
+            auth: 1,
             layout: "Admin",
             title: 'EventCustomers'
         }
@@ -96,7 +119,7 @@ const routes = [
         name: "admin.vote",
         component: Vote,
         meta: {
-            auth: true,
+            auth: 1,
             layout: "Admin",
             title: "Vote"
         }

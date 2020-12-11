@@ -36,6 +36,8 @@ Route::group(['namespace' => 'Api'], function() {
 
         Route::group(['prefix' => '/events',], function () {
 
+            Route::get('active', 'EventsController@get_active_event_questions');
+
             Route::get('', 'EventsController@index');
             Route::get('{id}', 'EventsController@show');
             Route::post('', 'EventsController@store');

@@ -5,12 +5,6 @@
   */
 
 /*!
- * @websanova/vue-auth v3.3.8
- * https://websanova.com/docs/vue-auth
- * Released under the MIT License.
- */
-
-/*!
  * Sizzle CSS Selector Engine v2.3.5
  * https://sizzlejs.com/
  *

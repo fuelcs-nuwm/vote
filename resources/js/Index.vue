@@ -20,6 +20,7 @@ import Spinner from "./components/common/Spinner";
 import Root from "./components/layouts/Root";
 import Admin from "./components/layouts/Admin";
 import Empty from "./components/layouts/Empty";
+import Vote from "./components/layouts/Vote";
 import {mapGetters} from "vuex";
 
 export default {
@@ -37,7 +38,8 @@ export default {
         Spinner,
         Root,
         Admin,
-        Empty
+        Empty,
+        Vote
     }
 }
 </script>

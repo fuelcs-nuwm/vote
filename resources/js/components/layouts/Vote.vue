@@ -5,34 +5,12 @@
             <div class="main d-flex flex-column flex-grow-1">
                 <header class="container-fluid d-flex justify-content-between">
                     <nav class="navbar container navbar-expand-lg navbar-light w-100 px-0">
-                        <a class="navbar-brand text-white" href="#">Адмін панель</a>
+                        <a class="navbar-brand text-white" href="#">VOTE.NUWM</a>
                         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
                         <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                            <div class="d-lg-flex d-block justify-content-between w-100">
-                                <ul class="navbar-nav d-none d-lg-flex">
-                                    <li class="nav-item" data-toggle="collapse">
-                                        <router-link tag="div" :to="{ name: 'admin.users'}" class="nav-link px-3" active-class="active">Користувачі</router-link>
-                                    </li>
-                                    <li class="nav-item" data-toggle="collapse">
-                                        <router-link tag="div" :to="{ name: 'admin.events'}" class="nav-link px-3" active-class="active">Події</router-link>
-                                    </li>
-                                    <li class="nav-item" data-toggle="collapse">
-                                        <router-link tag="div" :to="{ name: 'admin.vote'}" class="nav-link px-3" active-class="active">Голосування</router-link>
-                                    </li>
-                                </ul>
-                                <ul class="navbar-nav d-flex d-lg-none">
-                                    <li class="nav-item" data-toggle="collapse" data-target="#navbarNavDropdown">
-                                        <router-link tag="div" :to="{ name: 'admin.users'}" class="nav-link px-3" active-class="active">Користувачі</router-link>
-                                    </li>
-                                    <li class="nav-item" data-toggle="collapse" data-target="#navbarNavDropdown">
-                                        <router-link tag="div" :to="{ name: 'admin.events'}" class="nav-link px-3" active-class="active">Події</router-link>
-                                    </li>
-                                    <li class="nav-item" data-toggle="collapse" data-target="#navbarNavDropdown">
-                                        <router-link tag="div" :to="{ name: 'admin.vote'}" class="nav-link px-3" active-class="active">Голосування</router-link>
-                                    </li>
-                                </ul>
+                            <div class="d-lg-flex d-block justify-content-end w-100">
                                 <div class="profile d-flex align-items-center">
                                     <img :src="$auth.user().avatar_original" alt="avatar" rel="noreferrer" class="avatar m-2">
                                     <div class="m-2 text-white">{{ $auth.user().name }}</div>

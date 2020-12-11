@@ -25,8 +25,14 @@ export default {
                     scope: this.$route.query.scope,
                 }
             })
-                .then()
-                .catch()
+                .then((res)=> {
+                    console.log(res)
+                })
+                .catch((error)=> {
+                    console.log(error.response.data.message);
+                    alert (error.response.data.message) ;
+                    this.$router.push({ name: 'home'}).catch(()=>{});
+                })
                 .finally(()=>{
                     this.setIsShowSpinner(false);
                 });

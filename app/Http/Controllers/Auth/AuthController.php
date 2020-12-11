@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Event;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
@@ -24,7 +25,7 @@ class AuthController extends Controller
             $user = Socialite::driver('google')->stateless()->user();
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Error logged in.',
+                'message' => 'Помилка авторизації. Спробуйте ще раз пізніше.',
                 'status' => 'error'
             ], 401);
         }
@@ -32,7 +33,7 @@ class AuthController extends Controller
         //only allow people with @company.com to login
         if(explode("@", $user->email)[1] !== 'nuwm.edu.ua'){
             return response()->json([
-                'message' => 'Not from nuwm.edu.ua',
+                'message' => 'Ви не з nuwm.edu.ua',
                 'status' => 'error'
             ], 401);
         }
@@ -41,17 +42,71 @@ class AuthController extends Controller
 
         if($existingUser){
             // log them in
-            return $this->login($existingUser);
+            $existingUser->name            = $user->name;
+            $existingUser->avatar          = $user->avatar;
+            $existingUser->avatar_original = $user->avatar_original;
+            $existingUser->save();
+
+            if ($existingUser->role === User::ROLE_ADMIN) {
+                return $this->login($existingUser);
+            } else {
+                $event = Event::where("started", Event::EVENT_STARTED)->first();
+
+                if (!$event) {
+                    return response()->json([
+                        'message' => 'Немає активної події',
+                        'status' => 'error'
+                    ], 401);
+                }
+
+                $event = Event::with('customers')
+                    ->whereHas('customers', function ($query) use ($user){
+                        return $query->where('email',  $user->email);
+                    })
+                    ->where("started", Event::EVENT_STARTED)->first();
+
+                if ($event) {
+                    return $this->login($existingUser);
+                } else {
+                    return response()->json([
+                        'message' => 'Ви не є учасником події',
+                        'status' => 'error'
+                    ], 401);
+                }
+            }
+
         } else {
             // create a new user
             $newUser                  = new User();
             $newUser->name            = $user->name;
             $newUser->email           = $user->email;
-            $newUser->google_id       = $user->id;
             $newUser->avatar          = $user->avatar;
             $newUser->avatar_original = $user->avatar_original;
             $newUser->save();
-            return $this->login($newUser);
+
+            $event = Event::where("started", Event::EVENT_STARTED)->first();
+
+            if (!$event) {
+                return response()->json([
+                    'message' => 'Немає активної події',
+                    'status' => 'error'
+                ], 401);
+            }
+
+            $event = Event::with('customers')
+                ->whereHas('customers', function ($query) use ($user){
+                    return $query->where('email',  $user->email);
+                })
+                ->where("started", Event::EVENT_STARTED)->first();
+
+            if ($event) {
+                return $this->login($newUser);
+            } else {
+                return response()->json([
+                    'message' => 'Ви не є учасником події',
+                    'status' => 'error'
+                ], 401);
+            }
         }
     }
 
@@ -60,12 +115,12 @@ class AuthController extends Controller
 
         if (!$user) {
             return response()->json([
-                'message' => 'Invalid email or password.',
+                'message' => 'Помилка авторизації. Спробуйте ще раз пізніше.',
                 'status' => 'error'
             ], 401);
         }
 
-        if ($token = JWTAuth::fromUser($user)) {
+        if ($token = auth('api')->claims(['user_role' => "admin"])->fromUser($user)) {
             return response()->json([
                 'message' => 'Successfully logged in.',
                 'status' => 'success'
@@ -73,7 +128,7 @@ class AuthController extends Controller
         }
 
         return response()->json([
-            'message' => 'Error logged in.',
+            'message' => 'Помилка авторизації. Спробуйте ще раз пізніше.',
             'status' => 'error'
         ], 401);
     }
@@ -92,7 +147,7 @@ class AuthController extends Controller
     {
         $user = Auth::guard()->user();
 
-        //$user->user_roles = $user->getRoleNames();
+        $user->user_role = "admin";
 
         return response()->json([
             'status' => 'success',
