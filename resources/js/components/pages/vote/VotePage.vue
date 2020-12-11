@@ -11,19 +11,21 @@
                 </div>
             </div>
             <div class="col-lg-4 main-section">
-                <vuescroll :ops="ops">
-                    <div v-if="activeEvent">
-                        <p>Голосування:</p>
-                        <div class="vote-section flex-grow-1 border border-secondary p-3 mb-3">
-                            Вікно голосуваня
-                        </div>
-                        <p>Запитання:</p>
+                <p>Голосування:</p>
+                <div class="vote-section flex-grow-1 border border-secondary p-3 mb-3">
+                    Вікно голосуваня
+                </div>
+                <div class="question-section">
+                    <vuescroll :ops="ops">
+                        <div v-if="activeEvent">
+                            <p>Запитання:</p>
 
-                        <div class="alert alert-secondary" v-for="question in questions">
-                            {{ question.title }}
+                            <div class="alert alert-secondary" v-for="question in questions">
+                                {{ question.title }}
+                            </div>
                         </div>
-                    </div>
-                </vuescroll>
+                    </vuescroll>
+                </div>
             </div>
             <div class="col-lg-3 flex-grow-1 d-flex flex-column">
                 <p>Чат:</p>
@@ -38,8 +40,12 @@
 
 <script>
 import {mapMutations} from "vuex";
+import vuescroll from "vuescroll";
 
 export default {
+    components: {
+        vuescroll
+    },
     data() {
         return {
             questions: [],
@@ -96,8 +102,8 @@ export default {
 .content {
     background-color: rgb(241, 241, 241);
 
-    .main-section {
-        height: calc(100vh - 200px);
+    .question-section {
+        height: calc(100vh - 320px);
     }
 }
 
