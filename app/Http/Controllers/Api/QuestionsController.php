@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Event;
+use App\Events\ChangedEventQuestionsEvent;
+use App\Events\NewVoteEvent;
 use App\Http\Controllers\Controller;
 use App\Question;
 use Illuminate\Http\Request;
@@ -56,6 +59,12 @@ class QuestionsController extends Controller
         $question->fill($request->toArray());
         $question->save();
 
+        $event = Event::where("started", Event::EVENT_STARTED)->first();
+
+        if ($event) {
+            event(new ChangedEventQuestionsEvent());
+        }
+
         return response()->json([
             "data" => $question,
             "message" => "ok",
@@ -83,6 +92,12 @@ class QuestionsController extends Controller
         $question->fill($request->toArray());
         $question->save();
 
+        $event = Event::where("started", Event::EVENT_STARTED)->first();
+
+        if ($event) {
+            event(new ChangedEventQuestionsEvent());
+        }
+
         return response()->json([
             "data" => $question,
             "message" => "ok",
@@ -93,6 +108,12 @@ class QuestionsController extends Controller
     public function delete ($id) {
         $question = Question::findOrFail($id);
         $question->delete();
+
+        $event = Event::where("started", Event::EVENT_STARTED)->first();
+
+        if ($event) {
+            event(new ChangedEventQuestionsEvent());
+        }
 
         return response()->json([
             "data" => [],

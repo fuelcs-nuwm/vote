@@ -81,6 +81,12 @@ export default {
             console.log(JSON. parse(data.vote))
             this.newVote (JSON. parse(data.vote))
         });
+
+        channel.listen(".ChangedEventQuestionsEvent", (data) => {
+            this.getActiveEvent();
+        });
+
+
     },
     methods:{
         ...mapMutations({

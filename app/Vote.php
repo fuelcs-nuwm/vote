@@ -9,6 +9,7 @@ class Vote extends Model
     protected $fillable = [
         'question_id',
         'is_active',
+        'vote_time',
         'started_at',
         'finished_at',
         'answer_yes',

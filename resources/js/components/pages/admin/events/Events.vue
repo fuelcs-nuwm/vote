@@ -158,7 +158,7 @@ export default {
 
             this.setIsShowSpinner(true);
             axios
-                .put(`events/${this.editId}`, {
+                .put(`/events/${this.editId}`, {
                     title: this.editedEvent.title,
                 })
                 .then(response => {

@@ -4199,7 +4199,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
 
       this.setIsShowSpinner(true);
-      axios.put("events/".concat(this.editId), {
+      axios.put("/events/".concat(this.editId), {
         title: this.editedEvent.title
       }).then(function (response) {
         _this3.getEvents();
@@ -4385,6 +4385,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -4402,6 +4411,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       activeEvent: null,
       embedHtml: '',
       embedHtmlModel: '',
+      voteTime: 0,
+      voteTimesList: [5, 10, 30],
       newQuestion: {
         title: ""
       },
@@ -4446,9 +4457,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           _this.activeEvent = Object(lodash__WEBPACK_IMPORTED_MODULE_1__["find"])(_this.events, ['started', 1]);
 
           if (_this.activeEvent) {
+            console.log(_this.activeEvent);
+
             _this.getQuestions(_this.activeEvent.id);
 
             _this.embedHtml = _this.activeEvent.embedHtml;
+            _this.voteTime = _this.activeEvent.vote_time;
           }
         }
       })["catch"](function (error) {}).then(function () {
@@ -4573,6 +4587,22 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }).then(function () {
         _this7.setIsShowSpinner(false);
       });
+    },
+    saveVoteTime: function saveVoteTime() {
+      var _this8 = this;
+
+      this.setIsShowSpinner(true);
+      axios.put("/events/".concat(this.activeEvent.id), {
+        embedHtml: this.activeEvent.embedHtml,
+        finished: this.activeEvent.finished,
+        started: this.activeEvent.started,
+        title: this.activeEvent.title,
+        vote_time: this.voteTime
+      }).then(function (response) {
+        _this8.getEvents();
+      })["catch"](function (error) {}).then(function () {
+        _this8.setIsShowSpinner(false);
+      });
     }
   })
 });
@@ -4678,6 +4708,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       console.log(JSON.parse(data.vote));
 
       _this.newVote(JSON.parse(data.vote));
+    });
+    channel.listen(".ChangedEventQuestionsEvent", function (data) {
+      _this.getActiveEvent();
     });
   },
   methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapMutations"])({
@@ -53361,18 +53394,80 @@ var render = function() {
                             )
                           ]),
                           _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-secondary",
-                              on: {
-                                click: function($event) {
-                                  return _vm.newVote(question.id)
+                          _c("div", { staticClass: "d-flex mb-3" }, [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-secondary mr-3",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.newVote(question.id)
+                                  }
                                 }
-                              }
-                            },
-                            [_vm._v("Нове голосування")]
-                          )
+                              },
+                              [_vm._v("Нове голосування")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              {
+                                staticClass:
+                                  "d-flex justify-content-center align-items-center"
+                              },
+                              [
+                                _c("span", { staticClass: "mr-3" }, [
+                                  _vm._v("Тривалість (сек):")
+                                ]),
+                                _vm._v(" "),
+                                _c(
+                                  "select",
+                                  {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.voteTime,
+                                        expression: "voteTime"
+                                      }
+                                    ],
+                                    staticClass: "form-control w-auto",
+                                    on: {
+                                      change: [
+                                        function($event) {
+                                          var $$selectedVal = Array.prototype.filter
+                                            .call(
+                                              $event.target.options,
+                                              function(o) {
+                                                return o.selected
+                                              }
+                                            )
+                                            .map(function(o) {
+                                              var val =
+                                                "_value" in o
+                                                  ? o._value
+                                                  : o.value
+                                              return val
+                                            })
+                                          _vm.voteTime = $event.target.multiple
+                                            ? $$selectedVal
+                                            : $$selectedVal[0]
+                                        },
+                                        _vm.saveVoteTime
+                                      ]
+                                    }
+                                  },
+                                  _vm._l(_vm.voteTimesList, function(voteTime) {
+                                    return _c(
+                                      "option",
+                                      { domProps: { value: voteTime } },
+                                      [_vm._v(_vm._s(voteTime))]
+                                    )
+                                  }),
+                                  0
+                                )
+                              ]
+                            )
+                          ])
                         ])
                       })
                     ],

@@ -84,7 +84,16 @@
                                 {{ question.title }}
                             </div>
 
-                            <button class="btn btn-secondary" @click="newVote(question.id)">Нове голосування</button>
+                            <div class="d-flex mb-3">
+                                <button class="btn btn-secondary mr-3" @click="newVote(question.id)">Нове голосування</button>
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <span class="mr-3">Тривалість (сек):</span>
+                                    <select class="form-control w-auto" v-model="voteTime" @change="saveVoteTime">
+                                        <option v-for=" voteTime in voteTimesList" :value="voteTime">{{ voteTime }}</option>
+                                    </select>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </vuescroll>
@@ -118,6 +127,8 @@ export default {
             activeEvent: null,
             embedHtml: '',
             embedHtmlModel: '',
+            voteTime: 0,
+            voteTimesList: [5,10,30],
             newQuestion: {
                 title: ""
             },
@@ -164,8 +175,10 @@ export default {
                         this.activeEvent = _find(this.events, ['started', 1]);
 
                         if (this.activeEvent) {
+                            console.log(this.activeEvent)
                             this.getQuestions(this.activeEvent.id);
-                            this.embedHtml = this.activeEvent.embedHtml
+                            this.embedHtml = this.activeEvent.embedHtml;
+                            this.voteTime = this.activeEvent.vote_time;
                         }
                     }
                 })
@@ -310,6 +323,26 @@ export default {
                 .catch(error => {
                     // console.log(error.response.data.message);
                     alert(error.response.data.message);
+                })
+                .then(() => {
+                    this.setIsShowSpinner(false);
+                });
+        },
+        saveVoteTime () {
+            this.setIsShowSpinner(true);
+            axios
+                .put(`/events/${this.activeEvent.id}`, {
+                    embedHtml: this.activeEvent.embedHtml,
+                    finished: this.activeEvent.finished,
+                    started: this.activeEvent.started,
+                    title: this.activeEvent.title,
+                    vote_time: this.voteTime,
+                })
+                .then(response => {
+                    this.getEvents();
+                })
+                .catch(error => {
+
                 })
                 .then(() => {
                     this.setIsShowSpinner(false);

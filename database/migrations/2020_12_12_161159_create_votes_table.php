@@ -20,6 +20,7 @@ class CreateVotesTable extends Migration
                 ->references('id')->on('questions')
                 ->onDelete('restrict')->onUpdate('restrict');
             $table->boolean('is_active')->default(false);
+            $table->integer('vote_time')->default(30);
             $table->dateTime('started_at')->nullable();
             $table->dateTime('finished_at')->nullable();
             $table->integer('answer_yes')->nullable();
