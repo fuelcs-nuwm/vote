@@ -1,0 +1,19 @@
+{
+    "authHost": "https://localhost/laravel-realtime-chat/public",
+    "authEndpoint": "/broadcasting/auth",
+    "clients": [],
+    "database": "redis",
+    "databaseConfig": {
+        "redis": {},
+        "sqlite": {
+            "databasePath": "/database/laravel-echo-server.sqlite"
+        }
+    },
+    "devMode": true,
+    "host": null,
+    "port": "6001",
+    "protocol": "https",
+    "socketio": {},
+    "sslCertPath": "d:\\Program Files\\OpenServer\\userdata\\config\\cert_files\\server.crt",
+    "sslKeyPath": "d:\\Program Files\\OpenServer\\userdata\\config\\cert_files\\server.key"
+}

@@ -77,14 +77,14 @@
                                 class="text-danger"
                             >Введіть назву
                             </div>
-                            <div class="alert alert-secondary" v-for="question in questions">
-                                {{ question.title }}
-                            </div>
                         </div>
 
+                        <div v-for="question in questions">
+                            <div class="alert alert-secondary">
+                                {{ question.title }}
+                            </div>
 
-                        <div class="alert alert-secondary" v-for="question in questions">
-                            {{ question.title }}
+                            <button class="btn btn-secondary" @click="newVote(question.id)">Нове голосування</button>
                         </div>
                     </div>
                 </vuescroll>
@@ -296,6 +296,22 @@ export default {
                 })
                 .then(() => {
                     this.newQuestion.title = "";
+                    this.setIsShowSpinner(false);
+                });
+        },
+        newVote(questionId) {
+            this.setIsShowSpinner(true);
+            axios
+                .post(`vote/new-vote`, {
+                    question_id: questionId,
+                })
+                .then(response => {
+                })
+                .catch(error => {
+                    // console.log(error.response.data.message);
+                    alert(error.response.data.message);
+                })
+                .then(() => {
                     this.setIsShowSpinner(false);
                 });
         }

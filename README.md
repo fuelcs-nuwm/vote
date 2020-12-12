@@ -10,3 +10,6 @@ Install the project:
 6. Set key JWT - php artisan jwt:secret
 7. Write credentials for DB in .ENV file
 8. Create and filling DB - php artisan migrate --seed
+9. npm install -g laravel-echo-server
+10. laravel-echo-server init
+11. laravel-echo-server start
