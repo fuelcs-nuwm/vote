@@ -4711,6 +4711,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     });
     channel.listen(".ChangedEventQuestionsEvent", function (data) {
       _this.getActiveEvent();
+
+      _this.getActiveVote();
     });
   },
   methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapMutations"])({

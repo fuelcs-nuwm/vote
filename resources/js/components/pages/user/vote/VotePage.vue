@@ -84,6 +84,7 @@ export default {
 
         channel.listen(".ChangedEventQuestionsEvent", (data) => {
             this.getActiveEvent();
+            this.getActiveVote();
         });
 
 
