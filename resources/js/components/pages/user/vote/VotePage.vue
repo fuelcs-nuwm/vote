@@ -17,6 +17,14 @@
                     :class="{'bg-dark' : activeVote}"
                 >
                     <div v-if="activeVote">
+                        <div class="progress mb-3">
+                            <div
+                                class="progress-bar" role="progressbar"
+                                :style="{width: this.timerWidth + '%'}"
+                                :aria-valuenow="this.timerWidth"
+                                aria-valuemin="0"
+                                :aria-valuemax="activeVote.vote_time"></div>
+                        </div>
                         <div class="border border-secondary p-3 mb-3 bg-secondary text-white">{{ activeVote.question.title }}</div>
                         <button class="btn btn-success mr-2">Так</button>
                         <button class="btn btn-danger mr-2">Ні</button>
@@ -60,6 +68,9 @@ export default {
             activeEvent: null,
             activeVote: null,
             embedHtml: "",
+            timerId: null,
+            timerCurrentTime: null,
+            timerWidth: null,
 
             ops: {
                 vuescroll: {},
@@ -78,13 +89,23 @@ export default {
 
         let channel = Echo.channel('vote')
         channel.listen(".NewVoteEvent", (data) => {
-            console.log(JSON. parse(data.vote))
-            this.newVote (JSON. parse(data.vote))
+            console.log(data.vote)
+            this.startTimer ();
+            this.newVote (data.vote)
         });
 
         channel.listen(".ChangedEventQuestionsEvent", (data) => {
             this.getActiveEvent();
             this.getActiveVote();
+        });
+
+        channel.listen(".VoteEndedEvent", (data) => {
+            this.getActiveEvent();
+            this.getActiveVote();
+        });
+
+        channel.listen(".ChangedActiveEvent", (data) => {
+            this.getActiveEvent();
         });
 
 
@@ -96,6 +117,19 @@ export default {
         init () {
             this.getActiveEvent();
             this.getActiveVote();
+        },
+
+        startTimer () {
+            this.timerCurrentTime = this.activeEvent.vote_time;
+            this.timerWidth = 100;
+            this.timerId = setInterval( () => {
+                if (this.timerCurrentTime > 0) {
+                    this.timerCurrentTime -= 0.1;
+                    this.timerWidth = this.timerCurrentTime * 100 / this.activeEvent.vote_time;
+                } else {
+                    clearInterval (this.timerId);
+                }
+            }, 100);
         },
 
         getActiveEvent() {

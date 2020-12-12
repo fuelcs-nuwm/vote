@@ -128,7 +128,7 @@ export default {
             embedHtml: '',
             embedHtmlModel: '',
             voteTime: 0,
-            voteTimesList: [5,10,30],
+            voteTimesList: [10,20,30,40,50,60],
             newQuestion: {
                 title: ""
             },
@@ -207,6 +207,7 @@ export default {
                     .put(`events/${this.selectedEvent.id}`, {
                         title: this.selectedEvent.title,
                         started: 1,
+                        finished: 0,
                     })
                     .then(response => {
                         this.activeEvent =_clone(response.data.data, true);
@@ -237,6 +238,7 @@ export default {
                     .put(`events/${this.activeEvent.id}`, {
                         title: this.activeEvent.title,
                         started: 0,
+                        finished: 1,
                     })
                     .then(response => {
                         this.activeEvent = null;
@@ -313,7 +315,7 @@ export default {
                 });
         },
         newVote(questionId) {
-            this.setIsShowSpinner(true);
+            // this.setIsShowSpinner(true);
             axios
                 .post(`vote/new-vote`, {
                     question_id: questionId,
@@ -325,7 +327,7 @@ export default {
                     alert(error.response.data.message);
                 })
                 .then(() => {
-                    this.setIsShowSpinner(false);
+                    // this.setIsShowSpinner(false);
                 });
         },
         saveVoteTime () {

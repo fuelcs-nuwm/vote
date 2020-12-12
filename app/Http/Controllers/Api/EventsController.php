@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Event;
+use App\Events\ChangedActiveEvent;
+use App\Events\LogoutEvent;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Validator;
@@ -25,7 +27,7 @@ class EventsController extends Controller
             'embedHtml' => 'nullable|string',
             'started' => 'boolean',
             'finished' => 'boolean',
-            'integer' => 'integer|min:30',
+            'vote_time' => 'integer',
         ]);
 
         if ($validator->fails()) {
@@ -67,19 +69,6 @@ class EventsController extends Controller
             "message" => "ok",
             "status" => 200
         ],200);
-
-        foreach ($model as $question) {
-            array_push($questions , [
-                'id' => $question->id,
-                'title' => $question->title,
-            ]);
-        }
-
-        return response()->json([
-            "data" => $questions,
-            "message" => "ok",
-            "status" => 200
-        ],200);
     }
 
     public function update($id, Request $request)
@@ -91,7 +80,7 @@ class EventsController extends Controller
             'embedHtml' => 'nullable|string',
             'started' => 'boolean',
             'finished' => 'boolean',
-            'integer' => 'integer|min:30',
+            'vote_time' => 'integer',
         ]);
 
         if ($validator->fails()) {
@@ -104,6 +93,12 @@ class EventsController extends Controller
 
         $event->fill($request->toArray());
         $event->save();
+
+        if ($event->finished) {
+            event(new LogoutEvent());
+        }
+
+        event(new ChangedActiveEvent());
 
         return response()->json([
             "data" => $event,

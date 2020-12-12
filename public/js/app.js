@@ -3548,6 +3548,14 @@ __webpack_require__.r(__webpack_exports__);
         }
       }
     };
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    var channel = Echo.channel('vote');
+    channel.listen(".LogoutEvent", function (data) {
+      _this.$auth.logout();
+    });
   }
 });
 
@@ -4412,7 +4420,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       embedHtml: '',
       embedHtmlModel: '',
       voteTime: 0,
-      voteTimesList: [5, 10, 30],
+      voteTimesList: [10, 20, 30, 40, 50, 60],
       newQuestion: {
         title: ""
       },
@@ -4486,7 +4494,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.setIsShowSpinner(true);
         axios.put("events/".concat(this.selectedEvent.id), {
           title: this.selectedEvent.title,
-          started: 1
+          started: 1,
+          finished: 0
         }).then(function (response) {
           _this2.activeEvent = Object(lodash__WEBPACK_IMPORTED_MODULE_1__["clone"])(response.data.data, true);
 
@@ -4511,7 +4520,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.setIsShowSpinner(true);
         axios.put("events/".concat(this.activeEvent.id), {
           title: this.activeEvent.title,
-          started: 0
+          started: 0,
+          finished: 1
         }).then(function (response) {
           _this3.activeEvent = null;
           _this3.questions = [];
@@ -4576,20 +4586,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
     },
     newVote: function newVote(questionId) {
-      var _this7 = this;
-
-      this.setIsShowSpinner(true);
+      // this.setIsShowSpinner(true);
       axios.post("vote/new-vote", {
         question_id: questionId
       }).then(function (response) {})["catch"](function (error) {
         // console.log(error.response.data.message);
         alert(error.response.data.message);
-      }).then(function () {
-        _this7.setIsShowSpinner(false);
+      }).then(function () {// this.setIsShowSpinner(false);
       });
     },
     saveVoteTime: function saveVoteTime() {
-      var _this8 = this;
+      var _this7 = this;
 
       this.setIsShowSpinner(true);
       axios.put("/events/".concat(this.activeEvent.id), {
@@ -4599,9 +4606,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         title: this.activeEvent.title,
         vote_time: this.voteTime
       }).then(function (response) {
-        _this8.getEvents();
+        _this7.getEvents();
       })["catch"](function (error) {}).then(function () {
-        _this8.setIsShowSpinner(false);
+        _this7.setIsShowSpinner(false);
       });
     }
   })
@@ -4675,6 +4682,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -4687,6 +4702,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       activeEvent: null,
       activeVote: null,
       embedHtml: "",
+      timerId: null,
+      timerCurrentTime: null,
+      timerWidth: null,
       ops: {
         vuescroll: {},
         scrollPanel: {},
@@ -4705,14 +4723,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     this.init();
     var channel = Echo.channel('vote');
     channel.listen(".NewVoteEvent", function (data) {
-      console.log(JSON.parse(data.vote));
+      console.log(data.vote);
 
-      _this.newVote(JSON.parse(data.vote));
+      _this.startTimer();
+
+      _this.newVote(data.vote);
     });
     channel.listen(".ChangedEventQuestionsEvent", function (data) {
       _this.getActiveEvent();
 
       _this.getActiveVote();
+    });
+    channel.listen(".VoteEndedEvent", function (data) {
+      _this.getActiveEvent();
+
+      _this.getActiveVote();
+    });
+    channel.listen(".ChangedActiveEvent", function (data) {
+      _this.getActiveEvent();
     });
   },
   methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapMutations"])({
@@ -4722,30 +4750,44 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.getActiveEvent();
       this.getActiveVote();
     },
-    getActiveEvent: function getActiveEvent() {
+    startTimer: function startTimer() {
       var _this2 = this;
 
-      this.setIsShowSpinner(true);
-      axios.get("/events/active").then(function (response) {
-        _this2.activeEvent = response.data.data;
-
-        if (_this2.activeEvent.questions) {
-          _this2.questions = _this2.activeEvent.questions;
+      this.timerCurrentTime = this.activeEvent.vote_time;
+      this.timerWidth = 100;
+      this.timerId = setInterval(function () {
+        if (_this2.timerCurrentTime > 0) {
+          _this2.timerCurrentTime -= 0.1;
+          _this2.timerWidth = _this2.timerCurrentTime * 100 / _this2.activeEvent.vote_time;
+        } else {
+          clearInterval(_this2.timerId);
         }
-
-        _this2.embedHtml = _this2.activeEvent.embedHtml;
-      })["catch"](function (error) {}).then(function () {
-        _this2.setIsShowSpinner(false);
-      });
+      }, 100);
     },
-    getActiveVote: function getActiveVote() {
+    getActiveEvent: function getActiveEvent() {
       var _this3 = this;
 
       this.setIsShowSpinner(true);
-      axios.get("/vote/get-active-vote").then(function (response) {
-        _this3.activeVote = response.data.data;
+      axios.get("/events/active").then(function (response) {
+        _this3.activeEvent = response.data.data;
+
+        if (_this3.activeEvent.questions) {
+          _this3.questions = _this3.activeEvent.questions;
+        }
+
+        _this3.embedHtml = _this3.activeEvent.embedHtml;
       })["catch"](function (error) {}).then(function () {
         _this3.setIsShowSpinner(false);
+      });
+    },
+    getActiveVote: function getActiveVote() {
+      var _this4 = this;
+
+      this.setIsShowSpinner(true);
+      axios.get("/vote/get-active-vote").then(function (response) {
+        _this4.activeVote = response.data.data;
+      })["catch"](function (error) {}).then(function () {
+        _this4.setIsShowSpinner(false);
       });
     },
     newVote: function newVote(vote) {
@@ -53583,6 +53625,19 @@ var render = function() {
               [
                 _vm.activeVote
                   ? _c("div", [
+                      _c("div", { staticClass: "progress mb-3" }, [
+                        _c("div", {
+                          staticClass: "progress-bar",
+                          style: { width: this.timerWidth + "%" },
+                          attrs: {
+                            role: "progressbar",
+                            "aria-valuenow": this.timerWidth,
+                            "aria-valuemin": "0",
+                            "aria-valuemax": _vm.activeVote.vote_time
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
                       _c(
                         "div",
                         {

@@ -56,6 +56,13 @@ export default {
             }
         };
     },
+    mounted() {
+        let channel = Echo.channel('vote');
+
+        channel.listen(".LogoutEvent", (data) => {
+            this.$auth.logout()
+        });
+    }
 }
 </script>
 
