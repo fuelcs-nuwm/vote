@@ -90,7 +90,6 @@ export default {
         let channel = Echo.channel('vote')
         channel.listen(".NewVoteEvent", (data) => {
             console.log(data.vote)
-            this.startTimer ();
             this.newVote (data.vote)
         });
 
@@ -120,12 +119,12 @@ export default {
         },
 
         startTimer () {
-            this.timerCurrentTime = this.activeEvent.vote_time;
+            this.timerCurrentTime = this.activeVote.vote_time;
             this.timerWidth = 100;
             this.timerId = setInterval( () => {
                 if (this.timerCurrentTime > 0) {
                     this.timerCurrentTime -= 0.1;
-                    this.timerWidth = this.timerCurrentTime * 100 / this.activeEvent.vote_time;
+                    this.timerWidth = this.timerCurrentTime * 100 / this.activeVote.vote_time;
                 } else {
                     clearInterval (this.timerId);
                 }
@@ -164,6 +163,7 @@ export default {
         },
         newVote (vote) {
             this.activeVote = vote;
+            this.startTimer ();
         }
     }
 }

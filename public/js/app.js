@@ -4725,8 +4725,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     channel.listen(".NewVoteEvent", function (data) {
       console.log(data.vote);
 
-      _this.startTimer();
-
       _this.newVote(data.vote);
     });
     channel.listen(".ChangedEventQuestionsEvent", function (data) {
@@ -4753,12 +4751,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     startTimer: function startTimer() {
       var _this2 = this;
 
-      this.timerCurrentTime = this.activeEvent.vote_time;
+      this.timerCurrentTime = this.activeVote.vote_time;
       this.timerWidth = 100;
       this.timerId = setInterval(function () {
         if (_this2.timerCurrentTime > 0) {
           _this2.timerCurrentTime -= 0.1;
-          _this2.timerWidth = _this2.timerCurrentTime * 100 / _this2.activeEvent.vote_time;
+          _this2.timerWidth = _this2.timerCurrentTime * 100 / _this2.activeVote.vote_time;
         } else {
           clearInterval(_this2.timerId);
         }
@@ -4792,6 +4790,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     newVote: function newVote(vote) {
       this.activeVote = vote;
+      this.startTimer();
     }
   })
 });
