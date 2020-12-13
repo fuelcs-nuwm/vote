@@ -2,7 +2,7 @@
     <div class="content container-fluid py-3 flex-grow-1 d-flex flex-column">
         <h2>Керування голосуванням</h2>
         <div class="row flex-grow-1 d-flex">
-            <div class="col-lg-3 d-flex flex-grow-1 flex-column">
+            <div class="col-lg-4 d-flex flex-grow-1 flex-column">
                 <p>Доданий HTML:</p>
                 <div id="iframe-wrapper" v-html="embedHtml" class=" flex-grow-1" ></div>
                 <div class="input-group mb-3">
@@ -16,7 +16,7 @@
                 </div>
                 <button class="btn btn-secondary" @click="saveEmbedHtml">Додати HTML (відео)</button>
             </div>
-            <div class="col-lg-6 main-section">
+            <div class="col-lg-5 main-section">
                 <vuescroll :ops="ops">
                     <div class="form-group d-flex flex-column">
                         <p>Вибір події:</p>

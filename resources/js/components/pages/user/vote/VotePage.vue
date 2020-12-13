@@ -13,7 +13,7 @@
             <div class="main-section flex-grow-1 d-flex flex-column" :class="[activeVote ? 'col-lg-6' : 'col-lg-4']">
                 <p>Голосування:</p>
                 <div
-                    class="vote-section flex-grow-1 border border-secondary p-3 mb-3"
+                    class="vote-section border border-secondary p-3 mb-3"
                     :class="{'bg-dark' : activeVote}"
                 >
                     <div v-if="activeVote">

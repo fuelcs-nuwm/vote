@@ -25,13 +25,20 @@ class EventChatMessagesController extends Controller
 
     public function get_event_messages () {
         $event = Event::where("started", Event::EVENT_STARTED)->first();
-        $messages = EventChatMessage::with('replies.user', 'user')->where(['message_id' => null , 'event_id' => $event->id])->get();
+        if ($event) {
+            $messages = EventChatMessage::with('replies.user', 'user')->where(['message_id' => null , 'event_id' => $event->id])->get();
 
-        return response()->json([
-            "data" => $messages,
-            "message" => "ok",
-            "status" => 200
-        ],200);
+            return response()->json([
+                "data" => $messages,
+                "message" => "ok",
+                "status" => 200
+            ],200);
+        } else {
+            return response()->json([
+                "message" => "Немає активної події",
+                "status" => 422
+            ],422);
+        }
     }
 
     public function store (Request $request)

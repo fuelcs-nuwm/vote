@@ -3,7 +3,7 @@
         <div class="bg-primary p-2 text-center" role="button" @click="getMessages">
             Оновити чат
         </div>
-        <div class="chat-body d-flex p-3">
+        <div class="chat-body d-flex flex-grow-1 p-3">
             <div class="flex-grow-1 border-bottom  border-top border-secondary">
                 <vuescroll ref="vuescroll" :ops="ops">
                     <div v-for="message in messages">
