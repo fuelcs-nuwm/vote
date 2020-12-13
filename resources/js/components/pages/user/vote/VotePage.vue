@@ -45,9 +45,7 @@
             </div>
             <div class="col-lg-3 flex-grow-1 d-flex flex-column">
                 <p>Чат:</p>
-                <div class="chat flex-grow-1 border border-secondary p-3">
-                    Вікно чату
-                </div>
+                <Chat></Chat>
             </div>
         </div>
     </div>
@@ -57,10 +55,12 @@
 <script>
 import {mapMutations} from "vuex";
 import vuescroll from "vuescroll";
+import Chat from "../../../common/Chat";
 
 export default {
     components: {
-        vuescroll
+        vuescroll,
+        Chat
     },
     data() {
         return {

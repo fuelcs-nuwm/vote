@@ -75,6 +75,18 @@ Route::group(['namespace' => 'Api'], function() {
 
         });
 
+        Route::group(['prefix' => '/messages',], function () {
+
+            Route::get('event-messages', 'EventChatMessagesController@get_event_messages');
+
+            Route::get('', 'EventChatMessagesController@index');
+            Route::get('{id}', 'EventChatMessagesController@show');
+            Route::post('', 'EventChatMessagesController@store');
+            Route::put('{id}', 'EventChatMessagesController@update');
+            Route::delete('{id}', 'EventChatMessagesController@delete');
+
+        });
+
 
     });
 });
