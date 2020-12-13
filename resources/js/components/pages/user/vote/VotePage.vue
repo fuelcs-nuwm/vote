@@ -10,7 +10,7 @@
                     Інформаційне вікно
                 </div>
             </div>
-            <div class="main-section" :class="[activeVote ? 'col-lg-6' : 'col-lg-4']">
+            <div class="main-section flex-grow-1 d-flex flex-column" :class="[activeVote ? 'col-lg-6' : 'col-lg-4']">
                 <p>Голосування:</p>
                 <div
                     class="vote-section flex-grow-1 border border-secondary p-3 mb-3"
@@ -30,6 +30,7 @@
                         <button class="btn btn-danger mr-2">Ні</button>
                         <button class="btn btn-danger mr-2">Утримався</button>
                     </div>
+                    <div class="text-center">Немає активного голосування</div>
                 </div>
                 <div class="question-section">
                     <vuescroll :ops="ops">
@@ -175,7 +176,7 @@ export default {
     background-color: rgb(241, 241, 241);
 
     .question-section {
-        height: calc(100vh - 320px);
+        max-height: calc(100vh - 320px);
     }
 }
 

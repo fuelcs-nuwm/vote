@@ -100,9 +100,7 @@
             </div>
             <div class="col-lg-3 flex-grow-1 d-flex flex-column">
                 <p>Чат:</p>
-                <div class="chat flex-grow-1 border border-secondary p-3">
-                    Вікно чату
-                </div>
+                <Chat></Chat>
             </div>
         </div>
     </div>
@@ -113,10 +111,12 @@ import {mapMutations} from "vuex";
 import {clone as _clone, find as _find} from 'lodash';
 import vuescroll from "vuescroll";
 import {maxLength, required} from "vuelidate/lib/validators";
+import Chat from "../../../common/Chat";
 
 export default {
     components: {
-        vuescroll
+        vuescroll,
+        Chat
     },
     data() {
         return {

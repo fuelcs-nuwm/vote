@@ -1,8 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Broadcast;
-use \App\Broadcasting\UserChannel;
-use \App\Broadcasting\VoteChannel;
+
 /*
 |--------------------------------------------------------------------------
 | Broadcast Channels
@@ -13,13 +12,10 @@ use \App\Broadcasting\VoteChannel;
 | used to check if an authenticated user can listen to the channel.
 |
 */
-
-//Broadcast::channel('App.User.{id}', function ($user, $id) {
-//    return (int) $user->id === (int) $id;
-//});
-//
-//
-//Broadcast::channel('user.{user}', UserChannel::class);
 Broadcast::channel('vote', function () {
+    return true;
+});
+
+Broadcast::channel('chat', function () {
     return true;
 });

@@ -1,15 +1,15 @@
 <template>
     <div class="chat d-flex flex-column flex-grow-1 border border-secondary">
-        <div class="bg-primary p-2 text-center" role="button">
+        <div class="bg-primary p-2 text-center" role="button" @click="getMessages">
             Оновити чат
         </div>
-        <div class="d-flex flex-grow-1 p-3">
+        <div class="chat-body d-flex p-3">
             <div class="flex-grow-1 border-bottom  border-top border-secondary">
-                <vuescroll :ops="ops">
+                <vuescroll ref="vuescroll" :ops="ops">
                     <div v-for="message in messages">
                         <div class="d-flex flex-column border border-secondary my-2">
                             <div class="bg-white p-2">
-                                <span><b>{{ message.user.name }}</b></span> <span>{{ message.date }}</span>
+                                <span><b>{{ message.user.name }}</b></span><br><span>{{ message.date }}</span>
                             </div>
                             <div class="flex-grow-1 p-2">{{ message.message }}</div>
                             <div class="d-flex justify-content-end">
@@ -23,19 +23,12 @@
 
                         <div
                             v-for="replies_message in message.replies"
-                            class="d-flex flex-column border border-secondary my-2 ml-3d"
+                            class="d-flex flex-column border border-secondary my-2 ml-5"
                         >
                             <div class="bg-white p-2">
-                                <span><b>{{ replies_message.user.name }}</b></span> <span>{{ replies_message.date }}</span>
+                                <span><b>{{ replies_message.user.name }}</b></span><br><span>{{ replies_message.date }}</span>
                             </div>
                             <div class="flex-grow-1 p-2">{{ replies_message.message }}</div>
-                            <div class="d-flex justify-content-end">
-                                <span
-                                    class="p-2 border-top border-left"
-                                    role="button"
-                                    @click="replyMessage(replies_message.id)"
-                                >Відповісти</span>
-                            </div>
                         </div>
                     </div>
 
@@ -46,13 +39,19 @@
                 <textarea
                     type="text"
                     class="form-control"
-                    placeholder="Нове запитання"
+                    :placeholder="isReply ? 'Нова відповідь':'Нове запитання'"
                     v-model="newMessage.message"
                     rows="3"
                 ></textarea>
             <div class="input-group-append">
-                <span v-if="!isReply"class="input-group-text" role="button" @click="storeMessage">Надіслати</span>
-                <span v-if="isReply"  class="input-group-text" role="button" @click="storeMessage">Відповісти</span>
+                <span v-if="!isReply" class="input-group-text" role="button" @click="storeMessage">Надіслати</span>
+                <div v-if="isReply" class="input-group-text d-flex flex-column" role="button">
+                    <span @click="storeMessage">Відповісти</span>
+                    <span
+                        class="p-2"
+                        @click="cancelReply"
+                    >Скасувати</span>
+                </div>
             </div>
         </div>
     </div>
@@ -98,6 +97,11 @@ export default {
     },
     mounted() {
         this.init();
+
+        let channel = Echo.channel('chat')
+        channel.listen(".NewMessageEvent", (data) => {
+            this.getMessages();
+        });
     },
     methods: {
         ...mapMutations({
@@ -112,6 +116,15 @@ export default {
                 .get(`/messages/event-messages`)
                 .then(response => {
                     this.messages = response.data.data;
+                    this.$nextTick(()=>{
+                        this.$refs["vuescroll"].scrollTo(
+                            {
+                                y: "100%"
+                            },
+                            500
+                        );
+                    })
+
                 })
                 .catch(error => {
                 })
@@ -120,10 +133,9 @@ export default {
                 });
         },
         storeMessage() {
-            // if (this.$v.newQuestion.title.$invalid) {
-            //     this.$v.newQuestion.title.$touch();
-            //     return;
-            // }
+            if (!this.newMessage.message) {
+                return;
+            }
             this.setIsShowSpinner(true);
             axios
                 .post(`messages`, {
@@ -131,7 +143,6 @@ export default {
                     message_id: this.replyMessageId,
                 })
                 .then(response => {
-                    this.messages.push(response.data.data);
                 })
                 .catch(error => {
 
@@ -146,11 +157,26 @@ export default {
         replyMessage (message_id) {
             this.isReply = true;
             this.replyMessageId = message_id;
+        },
+        cancelReply () {
+            this.isReply = false;
+            this.replyMessageId = null;
         }
     }
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+    .chat-body {
+        max-height: calc(100vh - 400px);
 
+        @media (max-width: 767.98px) {
+            max-height: calc(100vh - 200px);
+        }
+
+        @media (max-width: 575.98px) {
+            max-height: calc(100vh - 300px);
+        }
+
+    }
 </style>

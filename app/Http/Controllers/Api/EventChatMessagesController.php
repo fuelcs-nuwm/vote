@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Event;
 use App\EventChatMessage;
+use App\Events\NewMessageEvent;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ use Validator;
 class EventChatMessagesController extends Controller
 {
     public function index () {
-        $messages = EventChatMessage::with("replies",'user')->where('message_id', null)->get();
+        $messages = EventChatMessage::with("replies.user",'user')->where('message_id', null)->get();
 
         return response()->json([
             "data" => $messages,
@@ -24,33 +25,13 @@ class EventChatMessagesController extends Controller
 
     public function get_event_messages () {
         $event = Event::where("started", Event::EVENT_STARTED)->first();
-        $messages = EventChatMessage::with('user')->where(['event_id' => $event->id])->get();
-
-        $model = [];
-        foreach ($messages as $key => $value) {
-            $model[] = $value;
-        }
-
-        $messages = $this->getReplies($model);
+        $messages = EventChatMessage::with('replies.user', 'user')->where(['message_id' => null , 'event_id' => $event->id])->get();
 
         return response()->json([
             "data" => $messages,
             "message" => "ok",
             "status" => 200
         ],200);
-    }
-
-    private function getReplies ($model) {
-        foreach ($model as $key => $value) {
-            $result = array_filter($model, function($v) use ($value) {
-                return $value->id === $v['message_id'];
-            });
-            $value->replies = empty($result) ? [] : $result;
-        }
-        $result = array_filter($model, function($v) {
-            return empty($v->message_id);
-        });
-        return $result;
     }
 
     public function store (Request $request)
@@ -67,6 +48,15 @@ class EventChatMessagesController extends Controller
             ], 422);
         }
 
+        $parent_message = EventChatMessage::where('id', $request->message_id)->first();
+
+        if ($parent_message && $parent_message->message_id) {
+            return response()->json([
+                "message" => "Помилка",
+                "status" => 422
+            ], 422);
+        }
+
         $user = Auth::guard()->user();
         $event = Event::where("started", Event::EVENT_STARTED)->first();
 
@@ -79,6 +69,8 @@ class EventChatMessagesController extends Controller
         $message->save();
 
         $message = EventChatMessage::with("replies",'user')->where('message_id', null)->find($message->id);
+
+        event(new NewMessageEvent());
 
         return response()->json([
             "data" => $message,
