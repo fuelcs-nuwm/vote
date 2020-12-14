@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Event;
+use App\Events\RegisteredUseEvent;
 use App\Http\Controllers\Controller;
+use App\RegisteredUser;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
@@ -66,6 +69,19 @@ class AuthController extends Controller
                     ->where("started", Event::EVENT_STARTED)->first();
 
                 if ($event) {
+
+                    $already_registered_user =  RegisteredUser::where(['event_id' =>$event->id, 'user_id' => $existingUser->id])->get()->all();
+
+                    if (!$already_registered_user) {
+                        $registered_user = new RegisteredUser();
+                        $registered_user->event_id = $event->id;
+                        $registered_user->user_id = $existingUser->id;
+                        $registered_user->date = Carbon::now()->format('Y-m-d H:i:s');;
+                        $registered_user->save();
+
+                        event(new RegisteredUseEvent());
+                    }
+
                     return $this->login($existingUser);
                 } else {
                     return response()->json([
@@ -100,6 +116,19 @@ class AuthController extends Controller
                 ->where("started", Event::EVENT_STARTED)->first();
 
             if ($event) {
+
+                $already_registered_user =  RegisteredUser::where(['event_id' =>$event->id, 'user_id' => $newUser->id])->get()->all();
+
+                if (!$already_registered_user) {
+                    $registered_user = new RegisteredUser();
+                    $registered_user->event_id = $event->id;
+                    $registered_user->user_id = $newUser->id;
+                    $registered_user->date = Carbon::now()->format('Y-m-d H:i:s');;
+                    $registered_user->save();
+
+                    event(new RegisteredUseEvent());
+                }
+
                 return $this->login($newUser);
             } else {
                 return response()->json([

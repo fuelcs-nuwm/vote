@@ -87,6 +87,10 @@ Route::group(['namespace' => 'Api'], function() {
 
         });
 
+        Route::group(['prefix' => '/registered',], function () {
+            Route::get('event-users', 'RegisteredUserController@get_event_users');
+        });
+
 
     });
 });

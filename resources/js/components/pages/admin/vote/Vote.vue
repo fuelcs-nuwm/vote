@@ -50,8 +50,10 @@
                             >Деактивувати</span>
                         </div>
                     </div>
-
                     <div v-if="activeEvent">
+
+                        <p>Зареєстровано: {{ registeredUsers.length }} користувачів</p>
+
                         <p>Запитання:</p>
 
                         <button class="btn btn-secondary mb-3 mr-3" @click="isAddNewQuestion = !isAddNewQuestion">Додати запитання</button>
@@ -122,6 +124,7 @@ export default {
         return {
             isAddNewQuestion: false,
             events: [],
+            registeredUsers: [],
             questions: [],
             selectedEvent: null,
             activeEvent: null,
@@ -155,6 +158,11 @@ export default {
     },
     mounted() {
         this.init ();
+
+        let channel = Echo.channel('vote')
+        channel.listen(".RegisteredUseEvent", (data) => {
+            this.getRegisteredUsers ();
+        });
     },
     methods: {
         ...mapMutations({
@@ -162,6 +170,20 @@ export default {
         }),
         init () {
             this.getEvents();
+            this.getRegisteredUsers();
+        },
+        getRegisteredUsers () {
+            this.setIsShowSpinner(true);
+            axios
+                .get(`/registered/event-users`)
+                .then(response => {
+                    this.registeredUsers = response.data.data;
+                })
+                .catch(error => {
+                })
+                .then(() => {
+                    this.setIsShowSpinner(false);
+                });
         },
         getEvents() {
             this.setIsShowSpinner(true);

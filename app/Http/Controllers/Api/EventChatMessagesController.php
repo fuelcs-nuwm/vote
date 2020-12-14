@@ -72,7 +72,7 @@ class EventChatMessagesController extends Controller
         $message->event_id = $event->id;
         $message->message_id = $request->message_id;
         $message->message = $request->message;
-        $message->date = Carbon::now()->format('Y-m-d H:i:s');;
+        $message->date = Carbon::now()->format('Y-m-d H:i:s');
         $message->save();
 
         $message = EventChatMessage::with("replies",'user')->where('message_id', null)->find($message->id);
