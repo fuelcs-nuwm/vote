@@ -20,25 +20,35 @@
                         <div class="progress mb-3">
                             <div
                                 class="progress-bar" role="progressbar"
-                                :style="{width: this.timerWidth + '%'}"
-                                :aria-valuenow="this.timerWidth"
+                                :style="{width: timerWidth + '%'}"
+                                :aria-valuenow="timerWidth"
                                 aria-valuemin="0"
                                 :aria-valuemax="activeVote.vote_time"></div>
                         </div>
                         <div class="border border-secondary p-3 mb-3 bg-secondary text-white">{{ activeVote.question.title }}</div>
-                        <button class="btn btn-success mr-2">Так</button>
-                        <button class="btn btn-danger mr-2">Ні</button>
-                        <button class="btn btn-danger mr-2">Утримався</button>
+                        <button class="btn btn-success mr-2" @click="saveAnswer(1)">Так</button>
+                        <button class="btn btn-danger mr-2" @click="saveAnswer(2)">Ні</button>
+                        <button class="btn btn-danger mr-2" @click="saveAnswer(3)">Утримався</button>
                     </div>
-                    <div class="text-center">Немає активного голосування</div>
+                    <div v-if="!activeVote" class="text-center">Немає активного голосування</div>
                 </div>
                 <div class="question-section">
                     <vuescroll :ops="ops">
                         <div v-if="activeEvent">
                             <p>Запитання:</p>
-
-                            <div class="alert alert-secondary" v-for="question in questions">
-                                {{ question.title }}
+                            <div v-for="question in questions">
+                                <div class="alert alert-secondary">
+                                    {{ question.title }}
+                                </div>
+                                <div v-for="vote in question.votes">
+                                    <div class="border border-secondary p-3 mb-3 bg-light">
+                                        <div>Результат голосування о {{vote.finished_at}}</div>
+                                        <div>Так - {{vote.answer_yes}}</div>
+                                        <div>Ні - {{vote.answer_no}}</div>
+                                        <div>Утримався - {{vote.answer_abstained}}</div>
+                                        <div>Не голосували - {{vote.didnt_vote}}</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </vuescroll>
@@ -90,7 +100,6 @@ export default {
 
         let channel = Echo.channel('vote')
         channel.listen(".NewVoteEvent", (data) => {
-            console.log(data.vote)
             this.newVote (data.vote)
         });
 
@@ -165,7 +174,24 @@ export default {
         newVote (vote) {
             this.activeVote = vote;
             this.startTimer ();
-        }
+        },
+        saveAnswer(answer) {
+            this.setIsShowSpinner(true);
+            axios
+                .post(`vote/answers`, {
+                    answer: answer
+                })
+                .then(response => {
+                    alert('Голос прийнято.');
+                   this.activeVote = null;
+                })
+                .catch(error => {
+
+                })
+                .then(() => {
+                    this.setIsShowSpinner(false);
+                });
+        },
     }
 }
 </script>

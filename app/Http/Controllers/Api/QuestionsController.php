@@ -23,15 +23,7 @@ class QuestionsController extends Controller
     }
 
     public function get_event_questions ($id) {
-        $model = Question::all()->where('event_id', $id);
-        $questions = [];
-
-        foreach ($model as $question) {
-            array_push($questions , [
-                'id' => $question->id,
-                'title' => $question->title,
-            ]);
-        }
+        $questions = Question::with('votes')->where('event_id', $id)->get()->all();
 
         return response()->json([
             "data" => $questions,

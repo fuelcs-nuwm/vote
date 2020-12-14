@@ -89,6 +89,17 @@
                                 {{ question.title }}
                             </div>
 
+                            <div v-if="activeVote" class="progress mb-3">
+                                <div
+                                    class="progress-bar" role="progressbar"
+                                    :style="{width: timerWidth + '%'}"
+                                    :aria-valuenow="timerWidth"
+                                    aria-valuemin="0"
+                                    :aria-valuemax="activeVote.vote_time">
+
+                                </div>
+                            </div>
+
                             <div class="d-flex mb-3">
                                 <button class="btn btn-secondary mr-3" @click="newVote(question.id)">Нове голосування</button>
                                 <div class="d-flex justify-content-center align-items-center">
@@ -96,6 +107,16 @@
                                     <select class="form-control w-auto" v-model="voteTime" @change="saveVoteTime">
                                         <option v-for=" voteTime in voteTimesList" :value="voteTime">{{ voteTime }}</option>
                                     </select>
+                                </div>
+                            </div>
+
+                            <div v-for="vote in question.votes">
+                                <div class="border border-secondary p-3 mb-3 bg-light">
+                                    <div>Результат голосування о {{vote.finished_at}}</div>
+                                    <div>Так - {{vote.answer_yes}}</div>
+                                    <div>Ні - {{vote.answer_no}}</div>
+                                    <div>Утримався - {{vote.answer_abstained}}</div>
+                                    <div>Не голосували - {{vote.didnt_vote}}</div>
                                 </div>
                             </div>
 
@@ -156,6 +177,11 @@ export default {
                 title: ""
             },
 
+            activeVote: null,
+            timerId: null,
+            timerCurrentTime: null,
+            timerWidth: null,
+
             ops: {
                 vuescroll: {},
                 scrollPanel: {},
@@ -193,6 +219,15 @@ export default {
         channel.listen(".RegisteredUseEvent", (data) => {
             this.getRegisteredUsers ();
         });
+
+        channel.listen(".NewVoteEvent", (data) => {
+            this.handleNewVote (data.vote)
+        });
+
+        channel.listen(".VoteEndedEvent", (data) => {
+            this.getActiveVote();
+            this.getQuestions(this.activeEvent.id);
+        });
     },
     methods: {
         ...mapMutations({
@@ -201,6 +236,7 @@ export default {
         init () {
             this.getEvents();
             this.getRegisteredUsers();
+            this.getActiveVote();
         },
         getRegisteredUsers () {
             this.setIsShowSpinner(true);
@@ -401,6 +437,36 @@ export default {
                 .then(() => {
                     this.setIsShowSpinner(false);
                 });
+        },
+        startTimer () {
+            this.timerCurrentTime = this.activeVote.vote_time;
+            this.timerWidth = 100;
+            this.timerId = setInterval( () => {
+                if (this.timerCurrentTime > 0) {
+                    this.timerCurrentTime -= 0.1;
+                    this.timerWidth = this.timerCurrentTime * 100 / this.activeVote.vote_time;
+                } else {
+                    clearInterval (this.timerId);
+                }
+            }, 100);
+        },
+        getActiveVote() {
+            this.setIsShowSpinner(true);
+            axios
+                .get(`/vote/get-active-vote`)
+                .then(response => {
+                    this.activeVote = response.data.data;
+                })
+                .catch(error => {
+                })
+                .then(() => {
+                    this.setIsShowSpinner(false);
+                });
+        },
+
+        handleNewVote (vote) {
+            this.activeVote = vote;
+            this.startTimer ();
         }
     }
 }

@@ -71,7 +71,12 @@ Route::group(['namespace' => 'Api'], function() {
         Route::group(['prefix' => '/vote',], function () {
 
             Route::post('new-vote', 'VoteController@startNewVote');;
-            Route::get('get-active-vote', 'VoteController@getActiveVote');;
+            Route::get('get-active-vote', 'VoteController@getActiveVote');
+
+            Route::group(['prefix' => '/answers',], function () {
+                Route::get('{vote_id}', 'VoteAnswersController@get_event_users');
+                Route::post('', 'VoteAnswersController@store');
+            });
 
         });
 
@@ -90,7 +95,5 @@ Route::group(['namespace' => 'Api'], function() {
         Route::group(['prefix' => '/registered',], function () {
             Route::get('event-users', 'RegisteredUserController@get_event_users');
         });
-
-
     });
 });

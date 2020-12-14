@@ -7,7 +7,9 @@ use App\Events\NewVoteEvent;
 use App\Events\VoteEndedEvent;
 use App\Http\Controllers\Controller;
 use App\Question;
+use App\RegisteredUser;
 use App\Vote;
+use App\VoteAnswer;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Validator;
@@ -56,7 +58,17 @@ class VoteController extends Controller
                     event(new NewVoteEvent($vote));
 
                     sleep($event->vote_time);
+
+                    $regirtered_user = RegisteredUser::where('event_id', $event->id)->get()->count();
+                    $answer_yes = VoteAnswer::where(['vote_id'=> $vote->id ,'answer' => 1])->get()->count();
+                    $answer_no =  VoteAnswer::where(['vote_id'=> $vote->id ,'answer' => 2])->get()->count();
+                    $answer_abstained = VoteAnswer::where(['vote_id'=> $vote->id ,'answer' => 3])->get()->count();
+                    $didnt_vote = abs($regirtered_user - $answer_yes - $answer_no - $answer_abstained);
                     $vote->is_active = false;
+                    $vote->answer_yes = $answer_yes;
+                    $vote->answer_no = $answer_no;
+                    $vote->answer_abstained = $answer_abstained;
+                    $vote->didnt_vote = $didnt_vote;
                     $vote->finished_at = Carbon::now()->format('Y-m-d H:i:s');
                     $vote->save();
                     event(new VoteEndedEvent());

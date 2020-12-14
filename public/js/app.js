@@ -4599,6 +4599,27 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -4625,6 +4646,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       newQuestion: {
         title: ""
       },
+      activeVote: null,
+      timerId: null,
+      timerCurrentTime: null,
+      timerWidth: null,
       ops: {
         vuescroll: {},
         scrollPanel: {},
@@ -4663,6 +4688,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     channel.listen(".RegisteredUseEvent", function (data) {
       _this.getRegisteredUsers();
     });
+    channel.listen(".NewVoteEvent", function (data) {
+      _this.handleNewVote(data.vote);
+    });
+    channel.listen(".VoteEndedEvent", function (data) {
+      _this.getActiveVote();
+
+      _this.getQuestions(_this.activeEvent.id);
+    });
   },
   methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapMutations"])({
     setIsShowSpinner: 'setIsShowSpinner'
@@ -4670,6 +4703,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     init: function init() {
       this.getEvents();
       this.getRegisteredUsers();
+      this.getActiveVote();
     },
     getRegisteredUsers: function getRegisteredUsers() {
       var _this2 = this;
@@ -4838,6 +4872,34 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       })["catch"](function (error) {}).then(function () {
         _this9.setIsShowSpinner(false);
       });
+    },
+    startTimer: function startTimer() {
+      var _this10 = this;
+
+      this.timerCurrentTime = this.activeVote.vote_time;
+      this.timerWidth = 100;
+      this.timerId = setInterval(function () {
+        if (_this10.timerCurrentTime > 0) {
+          _this10.timerCurrentTime -= 0.1;
+          _this10.timerWidth = _this10.timerCurrentTime * 100 / _this10.activeVote.vote_time;
+        } else {
+          clearInterval(_this10.timerId);
+        }
+      }, 100);
+    },
+    getActiveVote: function getActiveVote() {
+      var _this11 = this;
+
+      this.setIsShowSpinner(true);
+      axios.get("/vote/get-active-vote").then(function (response) {
+        _this11.activeVote = response.data.data;
+      })["catch"](function (error) {}).then(function () {
+        _this11.setIsShowSpinner(false);
+      });
+    },
+    handleNewVote: function handleNewVote(vote) {
+      this.activeVote = vote;
+      this.startTimer();
     }
   })
 });
@@ -4863,6 +4925,16 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -4953,8 +5025,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     this.init();
     var channel = Echo.channel('vote');
     channel.listen(".NewVoteEvent", function (data) {
-      console.log(data.vote);
-
       _this.newVote(data.vote);
     });
     channel.listen(".ChangedEventQuestionsEvent", function (data) {
@@ -5021,6 +5091,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     newVote: function newVote(vote) {
       this.activeVote = vote;
       this.startTimer();
+    },
+    saveAnswer: function saveAnswer(answer) {
+      var _this5 = this;
+
+      this.setIsShowSpinner(true);
+      axios.post("vote/answers", {
+        answer: answer
+      }).then(function (response) {
+        alert('Голос прийнято.');
+        _this5.activeVote = null;
+      })["catch"](function (error) {}).then(function () {
+        _this5.setIsShowSpinner(false);
+      });
     }
   })
 });
@@ -53922,90 +54005,158 @@ var render = function() {
                         : _vm._e(),
                       _vm._v(" "),
                       _vm._l(_vm.questions, function(question) {
-                        return _c("div", [
-                          _c("div", { staticClass: "alert alert-secondary" }, [
-                            _vm._v(
-                              "\n                            " +
-                                _vm._s(question.title) +
-                                "\n                        "
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "d-flex mb-3" }, [
-                            _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-secondary mr-3",
-                                on: {
-                                  click: function($event) {
-                                    return _vm.newVote(question.id)
-                                  }
-                                }
-                              },
-                              [_vm._v("Нове голосування")]
-                            ),
-                            _vm._v(" "),
+                        return _c(
+                          "div",
+                          [
                             _c(
                               "div",
-                              {
-                                staticClass:
-                                  "d-flex justify-content-center align-items-center"
-                              },
+                              { staticClass: "alert alert-secondary" },
                               [
-                                _c("span", { staticClass: "mr-3" }, [
-                                  _vm._v("Тривалість (сек):")
-                                ]),
-                                _vm._v(" "),
-                                _c(
-                                  "select",
-                                  {
-                                    directives: [
-                                      {
-                                        name: "model",
-                                        rawName: "v-model",
-                                        value: _vm.voteTime,
-                                        expression: "voteTime"
-                                      }
-                                    ],
-                                    staticClass: "form-control w-auto",
-                                    on: {
-                                      change: [
-                                        function($event) {
-                                          var $$selectedVal = Array.prototype.filter
-                                            .call(
-                                              $event.target.options,
-                                              function(o) {
-                                                return o.selected
-                                              }
-                                            )
-                                            .map(function(o) {
-                                              var val =
-                                                "_value" in o
-                                                  ? o._value
-                                                  : o.value
-                                              return val
-                                            })
-                                          _vm.voteTime = $event.target.multiple
-                                            ? $$selectedVal
-                                            : $$selectedVal[0]
-                                        },
-                                        _vm.saveVoteTime
-                                      ]
-                                    }
-                                  },
-                                  _vm._l(_vm.voteTimesList, function(voteTime) {
-                                    return _c(
-                                      "option",
-                                      { domProps: { value: voteTime } },
-                                      [_vm._v(_vm._s(voteTime))]
-                                    )
-                                  }),
-                                  0
+                                _vm._v(
+                                  "\n                            " +
+                                    _vm._s(question.title) +
+                                    "\n                        "
                                 )
                               ]
-                            )
-                          ])
-                        ])
+                            ),
+                            _vm._v(" "),
+                            _vm.activeVote
+                              ? _c("div", { staticClass: "progress mb-3" }, [
+                                  _c("div", {
+                                    staticClass: "progress-bar",
+                                    style: { width: _vm.timerWidth + "%" },
+                                    attrs: {
+                                      role: "progressbar",
+                                      "aria-valuenow": _vm.timerWidth,
+                                      "aria-valuemin": "0",
+                                      "aria-valuemax": _vm.activeVote.vote_time
+                                    }
+                                  })
+                                ])
+                              : _vm._e(),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "d-flex mb-3" }, [
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-secondary mr-3",
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.newVote(question.id)
+                                    }
+                                  }
+                                },
+                                [_vm._v("Нове голосування")]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                {
+                                  staticClass:
+                                    "d-flex justify-content-center align-items-center"
+                                },
+                                [
+                                  _c("span", { staticClass: "mr-3" }, [
+                                    _vm._v("Тривалість (сек):")
+                                  ]),
+                                  _vm._v(" "),
+                                  _c(
+                                    "select",
+                                    {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.voteTime,
+                                          expression: "voteTime"
+                                        }
+                                      ],
+                                      staticClass: "form-control w-auto",
+                                      on: {
+                                        change: [
+                                          function($event) {
+                                            var $$selectedVal = Array.prototype.filter
+                                              .call(
+                                                $event.target.options,
+                                                function(o) {
+                                                  return o.selected
+                                                }
+                                              )
+                                              .map(function(o) {
+                                                var val =
+                                                  "_value" in o
+                                                    ? o._value
+                                                    : o.value
+                                                return val
+                                              })
+                                            _vm.voteTime = $event.target
+                                              .multiple
+                                              ? $$selectedVal
+                                              : $$selectedVal[0]
+                                          },
+                                          _vm.saveVoteTime
+                                        ]
+                                      }
+                                    },
+                                    _vm._l(_vm.voteTimesList, function(
+                                      voteTime
+                                    ) {
+                                      return _c(
+                                        "option",
+                                        { domProps: { value: voteTime } },
+                                        [_vm._v(_vm._s(voteTime))]
+                                      )
+                                    }),
+                                    0
+                                  )
+                                ]
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(question.votes, function(vote) {
+                              return _c("div", [
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass:
+                                      "border border-secondary p-3 mb-3 bg-light"
+                                  },
+                                  [
+                                    _c("div", [
+                                      _vm._v(
+                                        "Результат голосування о " +
+                                          _vm._s(vote.finished_at)
+                                      )
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("div", [
+                                      _vm._v("Так - " + _vm._s(vote.answer_yes))
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("div", [
+                                      _vm._v("Ні - " + _vm._s(vote.answer_no))
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("div", [
+                                      _vm._v(
+                                        "Утримався - " +
+                                          _vm._s(vote.answer_abstained)
+                                      )
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("div", [
+                                      _vm._v(
+                                        "Не голосували - " +
+                                          _vm._s(vote.didnt_vote)
+                                      )
+                                    ])
+                                  ]
+                                )
+                              ])
+                            })
+                          ],
+                          2
+                        )
                       })
                     ],
                     2
@@ -54170,10 +54321,10 @@ var render = function() {
                       _c("div", { staticClass: "progress mb-3" }, [
                         _c("div", {
                           staticClass: "progress-bar",
-                          style: { width: this.timerWidth + "%" },
+                          style: { width: _vm.timerWidth + "%" },
                           attrs: {
                             role: "progressbar",
-                            "aria-valuenow": this.timerWidth,
+                            "aria-valuenow": _vm.timerWidth,
                             "aria-valuemin": "0",
                             "aria-valuemax": _vm.activeVote.vote_time
                           }
@@ -54189,23 +54340,52 @@ var render = function() {
                         [_vm._v(_vm._s(_vm.activeVote.question.title))]
                       ),
                       _vm._v(" "),
-                      _c("button", { staticClass: "btn btn-success mr-2" }, [
-                        _vm._v("Так")
-                      ]),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-success mr-2",
+                          on: {
+                            click: function($event) {
+                              return _vm.saveAnswer(1)
+                            }
+                          }
+                        },
+                        [_vm._v("Так")]
+                      ),
                       _vm._v(" "),
-                      _c("button", { staticClass: "btn btn-danger mr-2" }, [
-                        _vm._v("Ні")
-                      ]),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-danger mr-2",
+                          on: {
+                            click: function($event) {
+                              return _vm.saveAnswer(2)
+                            }
+                          }
+                        },
+                        [_vm._v("Ні")]
+                      ),
                       _vm._v(" "),
-                      _c("button", { staticClass: "btn btn-danger mr-2" }, [
-                        _vm._v("Утримався")
-                      ])
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-danger mr-2",
+                          on: {
+                            click: function($event) {
+                              return _vm.saveAnswer(3)
+                            }
+                          }
+                        },
+                        [_vm._v("Утримався")]
+                      )
                     ])
                   : _vm._e(),
                 _vm._v(" "),
-                _c("div", { staticClass: "text-center" }, [
-                  _vm._v("Немає активного голосування")
-                ])
+                !_vm.activeVote
+                  ? _c("div", { staticClass: "text-center" }, [
+                      _vm._v("Немає активного голосування")
+                    ])
+                  : _vm._e()
               ]
             ),
             _vm._v(" "),
@@ -54223,14 +54403,66 @@ var render = function() {
                           _vm._l(_vm.questions, function(question) {
                             return _c(
                               "div",
-                              { staticClass: "alert alert-secondary" },
                               [
-                                _vm._v(
-                                  "\n                            " +
-                                    _vm._s(question.title) +
-                                    "\n                        "
-                                )
-                              ]
+                                _c(
+                                  "div",
+                                  { staticClass: "alert alert-secondary" },
+                                  [
+                                    _vm._v(
+                                      "\n                                " +
+                                        _vm._s(question.title) +
+                                        "\n                            "
+                                    )
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _vm._l(question.votes, function(vote) {
+                                  return _c("div", [
+                                    _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "border border-secondary p-3 mb-3 bg-light"
+                                      },
+                                      [
+                                        _c("div", [
+                                          _vm._v(
+                                            "Результат голосування о " +
+                                              _vm._s(vote.finished_at)
+                                          )
+                                        ]),
+                                        _vm._v(" "),
+                                        _c("div", [
+                                          _vm._v(
+                                            "Так - " + _vm._s(vote.answer_yes)
+                                          )
+                                        ]),
+                                        _vm._v(" "),
+                                        _c("div", [
+                                          _vm._v(
+                                            "Ні - " + _vm._s(vote.answer_no)
+                                          )
+                                        ]),
+                                        _vm._v(" "),
+                                        _c("div", [
+                                          _vm._v(
+                                            "Утримався - " +
+                                              _vm._s(vote.answer_abstained)
+                                          )
+                                        ]),
+                                        _vm._v(" "),
+                                        _c("div", [
+                                          _vm._v(
+                                            "Не голосували - " +
+                                              _vm._s(vote.didnt_vote)
+                                          )
+                                        ])
+                                      ]
+                                    )
+                                  ])
+                                })
+                              ],
+                              2
                             )
                           })
                         ],

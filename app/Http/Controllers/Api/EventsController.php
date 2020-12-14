@@ -61,7 +61,7 @@ class EventsController extends Controller
     }
 
     public function get_active_event_questions () {
-        $event = Event::with('questions')
+        $event = Event::with('questions.votes')
             ->where("started", Event::EVENT_STARTED)->first();
 
         return response()->json([
