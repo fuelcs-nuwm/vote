@@ -4580,6 +4580,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -4592,6 +4611,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   data: function data() {
     return {
+      isShowRregisteredUsersModal: false,
       isAddNewQuestion: false,
       events: [],
       registeredUsers: [],
@@ -4606,6 +4626,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         title: ""
       },
       ops: {
+        vuescroll: {},
+        scrollPanel: {},
+        rail: {},
+        bar: {
+          onlyShowBarOnScroll: true,
+          background: "#ED6E00" //keepShow: true,
+
+        }
+      },
+      opsUsers: {
         vuescroll: {},
         scrollPanel: {},
         rail: {},
@@ -12067,7 +12097,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../../node_module
 
 
 // module
-exports.push([module.i, ".content[data-v-32fc98c9] {\n  background-color: #f1f1f1;\n}\n.content .main-section[data-v-32fc98c9] {\n  height: calc(100vh - 200px);\n}", ""]);
+exports.push([module.i, ".content[data-v-32fc98c9] {\n  background-color: #f1f1f1;\n}\n.content .main-section[data-v-32fc98c9] {\n  height: calc(100vh - 200px);\n}\n.registered-users-modal[data-v-32fc98c9] {\n  z-index: 1000;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  left: 0;\n}\n.registered-users-modal .header[data-v-32fc98c9] {\n  background-color: #256589;\n}", ""]);
 
 // exports
 
@@ -53782,10 +53812,23 @@ var render = function() {
                     "div",
                     [
                       _c("p", [
+                        _c("span"),
                         _vm._v(
                           "Зареєстровано: " +
                             _vm._s(_vm.registeredUsers.length) +
-                            " користувачів"
+                            " користувачів\n                        "
+                        ),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-secondary",
+                            on: {
+                              click: function($event) {
+                                _vm.isShowRregisteredUsersModal = true
+                              }
+                            }
+                          },
+                          [_vm._v("Показати")]
                         )
                       ]),
                       _vm._v(" "),
@@ -53979,7 +54022,71 @@ var render = function() {
           [_c("p", [_vm._v("Чат:")]), _vm._v(" "), _c("Chat")],
           1
         )
-      ])
+      ]),
+      _vm._v(" "),
+      _vm.isShowRregisteredUsersModal
+        ? _c(
+            "div",
+            {
+              staticClass:
+                "registered-users-modal d-flex flex-column position-fixed p-3 bg-white"
+            },
+            [
+              _c(
+                "div",
+                { staticClass: "header d-flex p-3 mb-3 align-items-center" },
+                [
+                  _c("h5", { staticClass: "flex-grow-1 text-white" }, [
+                    _vm._v(
+                      "Зареєстровані користувачі ( " +
+                        _vm._s(_vm.registeredUsers.length) +
+                        " )"
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-secondary",
+                      on: {
+                        click: function($event) {
+                          _vm.isShowRregisteredUsersModal = !_vm.isShowRregisteredUsersModal
+                        }
+                      }
+                    },
+                    [_vm._v("Закрити")]
+                  )
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "flex-grow-1" },
+                [
+                  _c(
+                    "vuescroll",
+                    { attrs: { ops: _vm.opsUsers } },
+                    _vm._l(_vm.registeredUsers, function(user) {
+                      return _c(
+                        "div",
+                        { staticClass: "alert alert-secondary" },
+                        [
+                          _c("b", [_vm._v(_vm._s(user.user.name))]),
+                          _vm._v(" - "),
+                          _c("span", [_vm._v(_vm._s(user.user.email))]),
+                          _vm._v(" - "),
+                          _c("span", [_vm._v(" " + _vm._s(user.date) + " ")])
+                        ]
+                      )
+                    }),
+                    0
+                  )
+                ],
+                1
+              )
+            ]
+          )
+        : _vm._e()
     ]
   )
 }

@@ -52,7 +52,10 @@
                     </div>
                     <div v-if="activeEvent">
 
-                        <p>Зареєстровано: {{ registeredUsers.length }} користувачів</p>
+                        <p>
+                            <span></span>Зареєстровано: {{ registeredUsers.length }} користувачів
+                            <button @click="isShowRregisteredUsersModal = true" class="btn btn-secondary">Показати</button>
+                        </p>
 
                         <p>Запитання:</p>
 
@@ -105,6 +108,22 @@
                 <Chat></Chat>
             </div>
         </div>
+        <div
+            v-if="isShowRregisteredUsersModal"
+            class="registered-users-modal d-flex flex-column position-fixed p-3 bg-white"
+        >
+            <div class="header d-flex p-3 mb-3 align-items-center">
+                <h5 class="flex-grow-1 text-white">Зареєстровані користувачі ( {{registeredUsers.length }} )</h5>
+                <button class="btn btn-secondary" @click="isShowRregisteredUsersModal = !isShowRregisteredUsersModal">Закрити</button>
+            </div>
+            <div class="flex-grow-1">
+                <vuescroll :ops="opsUsers">
+                    <div class="alert alert-secondary" v-for="user in registeredUsers">
+                        <b>{{ user.user.name }}</b> - <span>{{ user.user.email }}</span> - <span> {{ user.date }} </span>
+                    </div>
+                </vuescroll>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -122,6 +141,7 @@ export default {
     },
     data() {
         return {
+            isShowRregisteredUsersModal: false,
             isAddNewQuestion: false,
             events: [],
             registeredUsers: [],
@@ -137,6 +157,16 @@ export default {
             },
 
             ops: {
+                vuescroll: {},
+                scrollPanel: {},
+                rail: {},
+                bar: {
+                    onlyShowBarOnScroll: true,
+                    background: "#ED6E00",
+                    //keepShow: true,
+                }
+            },
+            opsUsers: {
                 vuescroll: {},
                 scrollPanel: {},
                 rail: {},
@@ -383,6 +413,18 @@ export default {
 
     .main-section {
         height: calc(100vh - 200px);
+    }
+}
+
+.registered-users-modal {
+    z-index: 1000;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    .header {
+        background-color: #256589;
     }
 }
 
