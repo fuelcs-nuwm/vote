@@ -11964,7 +11964,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, ".chat-body[data-v-7b6c03be] {\n  max-height: calc(100vh - 400px);\n}\n@media (max-width: 767.98px) {\n.chat-body[data-v-7b6c03be] {\n    max-height: calc(100vh - 200px);\n}\n}\n@media (max-width: 575.98px) {\n.chat-body[data-v-7b6c03be] {\n    max-height: calc(100vh - 300px);\n}\n}", ""]);
+exports.push([module.i, ".chat-body[data-v-7b6c03be] {\n  max-height: calc(100vh - 400px);\n  min-height: 100px;\n}\n@media (max-width: 767.98px) {\n.chat-body[data-v-7b6c03be] {\n    max-height: calc(100vh - 200px);\n}\n}\n@media (max-width: 575.98px) {\n.chat-body[data-v-7b6c03be] {\n    max-height: calc(100vh - 300px);\n}\n}", ""]);
 
 // exports
 

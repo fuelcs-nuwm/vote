@@ -169,6 +169,7 @@ export default {
 <style scoped lang="scss">
     .chat-body {
         max-height: calc(100vh - 400px);
+        min-height: 100px;
 
         @media (max-width: 767.98px) {
             max-height: calc(100vh - 200px);
