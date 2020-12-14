@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Customer;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Validator;
 
 class CustomersController extends Controller
@@ -40,7 +41,15 @@ class CustomersController extends Controller
     public function store (Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email|unique:App\Customer,email',
+            'email' => [
+                'required',
+                'string',
+                'email',
+                Rule::unique('customers')->where(function ($query) use($request) {
+                    return $query->where('email', $request->email)
+                        ->where('event_id', $request->event_id);
+                }),
+            ],
             'event_id' => 'exists:App\Event,id'
         ]);
 
