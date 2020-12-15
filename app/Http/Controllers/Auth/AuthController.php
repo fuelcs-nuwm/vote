@@ -64,6 +64,14 @@ class AuthController extends Controller
                 } else {
                     $event = Event::where("started", Event::EVENT_STARTED)->first();
 
+                    $customer = Customer::with('groups')
+                        ->where(['event_id' => $event->id, 'email' => $existingUser->email])
+                        ->first();
+
+
+
+                    $existingUser->groups()->sync($customer->groups->pluck('id'));
+
                     if (!$event) {
                         return response()->json([
                             'message' => 'Немає активної події',

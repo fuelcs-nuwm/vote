@@ -12,7 +12,10 @@ class RegisteredUserController extends Controller
     public function get_event_users () {
         $event = Event::with('groups')->where("started", Event::EVENT_STARTED)->first();
             if ($event) {
-                $users = RegisteredUser::with('user.groups')->get()->all();
+                $users = RegisteredUser::with('user.groups')
+                    ->where("event_id", $event->id)
+                    ->get()
+                    ->all();
 
                 $group_count = [];
 
@@ -21,6 +24,7 @@ class RegisteredUserController extends Controller
                         ->whereHas('user.groups', function ($query) use ($group){
                             return $query->where('name',  $group->name);
                         })
+                        ->where("event_id", $event->id)
                         ->count();
 
                     array_push ($group_count , [
