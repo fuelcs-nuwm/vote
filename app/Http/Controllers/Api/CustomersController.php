@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Customer;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Validator;
 
@@ -21,18 +22,10 @@ class CustomersController extends Controller
     }
 
     public function get_event_customers ($id) {
-        $model = Customer::all()->where('event_id', $id);
-        $customers = [];
-
-        foreach ($model as $customer) {
-            array_push($customers , [
-                'id' => $customer->id,
-                'email' => $customer->email,
-            ]);
-        }
+        $model = Customer::with('groups')->where('event_id', $id)->get()->all();
 
         return response()->json([
-            "data" => $customers,
+            "data" => $model,
             "message" => "ok",
             "status" => 200
         ],200);
@@ -40,36 +33,54 @@ class CustomersController extends Controller
 
     public function store (Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => [
-                'required',
-                'string',
-                'email',
-                Rule::unique('customers')->where(function ($query) use($request) {
-                    return $query->where('email', $request->email)
-                        ->where('event_id', $request->event_id);
-                }),
-            ],
-            'event_id' => 'exists:App\Event,id'
-        ]);
+        DB::beginTransaction();
+        try
+        {
+            $validator = Validator::make($request->all(), [
+                'email' => [
+                    'required',
+                    'string',
+                    'email',
+                    Rule::unique('customers')->where(function ($query) use($request) {
+                        return $query->where('email', $request->email)
+                            ->where('event_id', $request->event_id);
+                    }),
+                ],
+                'event_id' => 'exists:App\Event,id',
+                'group_ids' => 'required'
+            ]);
 
-        if ($validator->fails()) {
+            if ($validator->fails()) {
+                return response()->json([
+                    "data" => [],
+                    "message" => $validator->errors(),
+                    "status" => 422
+                ], 422);
+            }
+
+            $customer = new Customer();
+            $customer->fill($request->except('group_ids'));
+            $customer->save();
+            $customer->groups()->sync($request->group_ids);
+
+            DB::commit();
+
+            return response()->json([
+                "data" => $customer,
+                "message" => "ok",
+                "status" => 200
+            ], 200);
+
+        }
+        catch (\Exception $e) {
+            DB::rollback();
+
             return response()->json([
                 "data" => [],
-                "message" => $validator->errors(),
-                "status" => 422
-            ], 422);
+                "message" => $e->getMessage(),
+                "status" => 500
+            ],500);
         }
-
-        $customer = new Customer();
-        $customer->fill($request->toArray());
-        $customer->save();
-
-        return response()->json([
-            "data" => $customer,
-            "message" => "ok",
-            "status" => 200
-        ], 200);
     }
 
     public function update ($id, Request $request)

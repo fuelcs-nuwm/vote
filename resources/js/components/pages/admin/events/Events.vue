@@ -36,6 +36,9 @@
                     <span class="input-group-text" @click="deleteEvent(event.id)">Видалити подію</span>
                 </div>
             </div>
+            <router-link v-if="editId == -1" tag="span" :to="`/admin/events/${event.id}/groups`">
+                <button class="btn btn-info mb-3 mr-3">Додати групу</button>
+            </router-link>
             <router-link v-if="editId == -1" tag="span" :to="`/admin/events/${event.id}/questions`">
                 <button class="btn btn-info mb-3 mr-3">Додати запитання</button>
             </router-link>

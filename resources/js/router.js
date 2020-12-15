@@ -8,6 +8,7 @@ import Users from "./components/pages/admin/users/Users"
 import Events from "./components/pages/admin/events/Events"
 import EventQuestions from "./components/pages/admin/events/EventQuestions"
 import EventCustomers from "./components/pages/admin/events/EventCustomers"
+import EventGroups from "./components/pages/admin/events/EventGroups"
 import Vote from "./components/pages/admin/vote/Vote"
 
 // Routes
@@ -98,6 +99,16 @@ const routes = [
         path: "/admin/events/:id/questions",
         name: "admin.events.questions",
         component: EventQuestions,
+        meta: {
+            auth: 1,
+            layout: "Admin",
+            title: 'EventQuestions'
+        }
+    },
+    {
+        path: "/admin/events/:id/groups",
+        name: "admin.events.groups",
+        component: EventGroups,
         meta: {
             auth: 1,
             layout: "Admin",

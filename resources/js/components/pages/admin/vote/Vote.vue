@@ -89,7 +89,7 @@
                                 {{ question.title }}
                             </div>
 
-                            <div v-if="activeVote" class="progress mb-3">
+                            <div v-if="activeVote && activeVote.question_id == question.id" class="progress mb-3">
                                 <div
                                     class="progress-bar" role="progressbar"
                                     :style="{width: timerWidth + '%'}"
@@ -134,13 +134,17 @@
             class="registered-users-modal d-flex flex-column position-fixed p-3 bg-white"
         >
             <div class="header d-flex p-3 mb-3 align-items-center">
-                <h5 class="flex-grow-1 text-white">Зареєстровані користувачі ( {{registeredUsers.length }} )</h5>
+                <div class="flex-grow-1 text-white">
+                    <h5>Зареєстровані користувачі ( {{registeredUsers.length }} )</h5>
+                    <span v-for="groups in registeredUsersGroups" class="mr-3">{{groups.name}} - ({{groups.count}})</span>
+                </div>
                 <button class="btn btn-secondary" @click="isShowRregisteredUsersModal = !isShowRregisteredUsersModal">Закрити</button>
             </div>
             <div class="flex-grow-1">
                 <vuescroll :ops="opsUsers">
                     <div class="alert alert-secondary" v-for="user in registeredUsers">
                         <b>{{ user.user.name }}</b> - <span>{{ user.user.email }}</span> - <span> {{ user.date }} </span>
+                        <span v-for="group in user.user.groups" class="badge badge-secondary">{{group.name}}</span>
                     </div>
                 </vuescroll>
             </div>
@@ -166,6 +170,7 @@ export default {
             isAddNewQuestion: false,
             events: [],
             registeredUsers: [],
+            registeredUsersGroups: [],
             questions: [],
             selectedEvent: null,
             activeEvent: null,
@@ -243,7 +248,8 @@ export default {
             axios
                 .get(`/registered/event-users`)
                 .then(response => {
-                    this.registeredUsers = response.data.data;
+                    this.registeredUsers = response.data.data.users;
+                    this.registeredUsersGroups = response.data.data.groups;
                 })
                 .catch(error => {
                 })
@@ -466,6 +472,7 @@ export default {
 
         handleNewVote (vote) {
             this.activeVote = vote;
+            console.log(this.activeVote);
             this.startTimer ();
         }
     }

@@ -57,6 +57,17 @@ Route::group(['namespace' => 'Api'], function() {
 
         });
 
+        Route::group(['prefix' => '/groups',], function () {
+
+            Route::get('', 'GroupController@index');
+            Route::get('events/{id}', 'GroupController@get_event_group');
+            Route::get('{id}', 'GroupController@show');
+            Route::post('', 'GroupController@store');
+            Route::put('{id}', 'GroupController@update');
+            Route::delete('{id}', 'GroupController@delete');
+
+        });
+
         Route::group(['prefix' => '/customers',], function () {
 
             Route::get('', 'CustomersController@index');

@@ -51,7 +51,7 @@ class EventsController extends Controller
 
     public function show($id, Request $request)
     {
-        $event = Event::findOrFail($id);
+        $event = Event::with('groups')->findOrFail($id);
 
         return response()->json([
             "data" => $event,

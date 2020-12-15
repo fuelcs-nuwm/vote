@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCustomersTable extends Migration
+class CreateGroupsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateCustomersTable extends Migration
      */
     public function up()
     {
-        Schema::create('customers', function (Blueprint $table) {
+        Schema::create('groups', function (Blueprint $table) {
             $table->id();
-            $table->string('email',100);
+            $table->string('name', 100);
             $table->foreignId('event_id');
             $table->foreign('event_id')
                 ->references('id')->on('events')
@@ -32,7 +32,7 @@ class CreateCustomersTable extends Migration
     public function down()
     {
         Schema::disableForeignKeyConstraints();
-        Schema::dropIfExists('customers');
+        Schema::dropIfExists('groups');
         Schema::enableForeignKeyConstraints();
     }
 }

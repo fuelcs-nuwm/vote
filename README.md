@@ -13,3 +13,4 @@ Install the project:
 9. npm install -g laravel-echo-server
 10. laravel-echo-server init
 11. laravel-echo-server start
+12. php artisan queue:work

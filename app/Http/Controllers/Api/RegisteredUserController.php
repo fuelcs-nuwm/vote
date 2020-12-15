@@ -10,12 +10,30 @@ use Illuminate\Http\Request;
 class RegisteredUserController extends Controller
 {
     public function get_event_users () {
-        $event = Event::where("started", Event::EVENT_STARTED)->first();
+        $event = Event::with('groups')->where("started", Event::EVENT_STARTED)->first();
             if ($event) {
-                $users = RegisteredUser::with('user')->get()->all();
+                $users = RegisteredUser::with('user.groups')->get()->all();
+
+                $group_count = [];
+
+                foreach ($event->groups as $index=>$group) {
+                    $count = RegisteredUser::with('user.groups')
+                        ->whereHas('user.groups', function ($query) use ($group){
+                            return $query->where('name',  $group->name);
+                        })
+                        ->count();
+
+                    array_push ($group_count , [
+                        'name' => $group->name,
+                        'count' => $count,
+                    ]);
+                }
 
                 return response()->json([
-                    "data" => $users,
+                    "data" => [
+                        'users' => $users,
+                        'groups' => $group_count,
+                        ],
                     "message" => "ok",
                     "status" => 200
                 ],200);
