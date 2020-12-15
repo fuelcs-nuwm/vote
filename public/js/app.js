@@ -5032,6 +5032,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }).then(function (response) {
           _this4.activeEvent = Object(lodash__WEBPACK_IMPORTED_MODULE_1__["clone"])(response.data.data, true);
 
+          _this4.getRegisteredUsers();
+
           if (_this4.activeEvent) {
             _this4.getQuestions(_this4.activeEvent.id);
           }

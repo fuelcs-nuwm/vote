@@ -306,6 +306,8 @@ export default {
                     .then(response => {
                         this.activeEvent =_clone(response.data.data, true);
 
+                        this.getRegisteredUsers ();
+
                         if (this.activeEvent) {
                             this.getQuestions(this.activeEvent.id);
                         }
