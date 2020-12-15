@@ -57,20 +57,13 @@ class AuthController extends Controller
                 $existingUser->save();
 
                 if ($existingUser->role === User::ROLE_ADMIN) {
-
-                    DB::commit();
-
                     return $this->login($existingUser);
                 } else {
-                    $event = Event::where("started", Event::EVENT_STARTED)->first();
-
-                    $customer = Customer::with('groups')
-                        ->where(['event_id' => $event->id, 'email' => $existingUser->email])
-                        ->first();
-
-
-
-                    $existingUser->groups()->sync($customer->groups->pluck('id'));
+                    $event = Event::with('customers')
+                        ->whereHas('customers.groups', function ($query) use ($user){
+                            return $query->where('email',  $user->email);
+                        })
+                        ->where("started", Event::EVENT_STARTED)->first();
 
                     if (!$event) {
                         return response()->json([
@@ -79,13 +72,12 @@ class AuthController extends Controller
                         ], 401);
                     }
 
-                    $event = Event::with('customers')
-                        ->whereHas('customers.groups', function ($query) use ($user){
-                            return $query->where('email',  $user->email);
-                        })
-                        ->where("started", Event::EVENT_STARTED)->first();
-
                     if ($event) {
+
+                        $customer = Customer::with('groups')
+                            ->where(['event_id' => $event->id, 'email' => $existingUser->email])
+                            ->first();
+                        $existingUser->groups()->sync($customer->groups->pluck('id'));
 
                         $already_registered_user =  RegisteredUser::where(['event_id' =>$event->id, 'user_id' => $existingUser->id])->get()->all();
 
@@ -123,15 +115,11 @@ class AuthController extends Controller
                 if (false) {
                     return $this->login($existingUser);
                 } else {
-                    $event = Event::where("started", Event::EVENT_STARTED)->first();
-
-                    $customer = Customer::with('groups')
-                        ->where(['event_id' => $event->id, 'email' => $newUser->email])
-                        ->first();
-
-
-
-                    $newUser->groups()->sync($customer->groups->pluck('id'));
+                    $event = Event::with('customers')
+                        ->whereHas('customers', function ($query) use ($user) {
+                            return $query->where('email', $user->email);
+                        })
+                        ->where("started", Event::EVENT_STARTED)->first();
 
                     if (!$event) {
                         return response()->json([
@@ -140,13 +128,13 @@ class AuthController extends Controller
                         ], 401);
                     }
 
-                    $event = Event::with('customers')
-                        ->whereHas('customers', function ($query) use ($user) {
-                            return $query->where('email', $user->email);
-                        })
-                        ->where("started", Event::EVENT_STARTED)->first();
-
                     if ($event) {
+
+                        $customer = Customer::with('groups')
+                            ->where(['event_id' => $event->id, 'email' => $newUser->email])
+                            ->first();
+
+                        $newUser->groups()->sync($customer->groups->pluck('id'));
 
                         $already_registered_user = RegisteredUser::where(['event_id' => $event->id, 'user_id' => $newUser->id])->get()->all();
 
@@ -154,13 +142,11 @@ class AuthController extends Controller
                             $registered_user = new RegisteredUser();
                             $registered_user->event_id = $event->id;
                             $registered_user->user_id = $newUser->id;
-                            $registered_user->date = Carbon::now()->format('Y-m-d H:i:s');;
+                            $registered_user->date = Carbon::now()->format('Y-m-d H:i:s');
                             $registered_user->save();
 
                             event(new RegisteredUseEvent());
                         }
-
-                        DB::commit();
 
                         return $this->login($newUser);
                     } else {
@@ -194,6 +180,7 @@ class AuthController extends Controller
         }
 
         if ($token = auth('api')->claims(['user_role' => "admin"])->fromUser($user)) {
+            DB::commit();
             return response()->json([
                 'message' => 'Successfully logged in.',
                 'status' => 'success'

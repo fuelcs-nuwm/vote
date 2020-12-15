@@ -13,7 +13,7 @@
                             <div class="d-lg-flex d-block justify-content-between w-100">
                                 <ul class="navbar-nav d-none d-lg-flex">
                                     <li class="nav-item" data-toggle="collapse">
-                                        <router-link tag="div" :to="{ name: 'admin.users'}" class="nav-link px-3" active-class="active">Користувачі</router-link>
+                                        <router-link tag="div" :to="{ name: 'admin.admins'}" class="nav-link px-3" active-class="active">Адміністратори</router-link>
                                     </li>
                                     <li class="nav-item" data-toggle="collapse">
                                         <router-link tag="div" :to="{ name: 'admin.events'}" class="nav-link px-3" active-class="active">Події</router-link>

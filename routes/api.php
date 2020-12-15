@@ -106,5 +106,14 @@ Route::group(['namespace' => 'Api'], function() {
         Route::group(['prefix' => '/registered',], function () {
             Route::get('event-users', 'RegisteredUserController@get_event_users');
         });
+
+        Route::group(['prefix' => '/admins',], function () {
+
+            Route::get('', 'AdminsController@index');
+            Route::post('', 'AdminsController@store');
+            Route::put('{id}', 'AdminsController@update');
+            Route::delete('{id}', 'AdminsController@delete');
+
+        });
     });
 });

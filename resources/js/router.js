@@ -4,7 +4,7 @@ import Callback from "./components/auth/Callback"
 import Login from "./components/auth/Login"
 import Router from "./components/Router"
 import VotePage from "./components/pages/user/vote/VotePage"
-import Users from "./components/pages/admin/users/Users"
+import Admins from "./components/pages/admin/users/Admins"
 import Events from "./components/pages/admin/events/Events"
 import EventQuestions from "./components/pages/admin/events/EventQuestions"
 import EventCustomers from "./components/pages/admin/events/EventCustomers"
@@ -69,16 +69,16 @@ const routes = [
         meta: {
             auth: {
                 role: 1,
-                redirect: { name: "admin.users" }
+                redirect: { name: "admin.admins" }
             },
             layout: "Admin",
             title: "Admin"
         }
     },
     {
-        path: "/admin/users",
-        name: "admin.users",
-        component: Users,
+        path: "/admin/admins",
+        name: "admin.admins",
+        component: Admins,
         meta: {
             auth: 1,
             layout: "Admin",
